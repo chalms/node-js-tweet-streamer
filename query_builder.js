@@ -1,9 +1,8 @@
 formatter = require('./formatter.js');
 
-QueryBuilder = function (args) {
+QueryBuilder = function () {
 	this.query = "";
-	this.args = {}; 
-
+	this.args = {}
 	this.add = function (str) {
 		if (str != "") {
 			this.query = this.query + " " + str;
@@ -42,9 +41,35 @@ QueryBuilder = function (args) {
 		this.args['source'] = "source:twitterfeed"
 	}
 
-	this.build = function () {
-		for (var key in args) {
-			this.query = this.query + " " + args[key]; 
+	params_without_input = { 
+		question: this.makeQuestion,
+		positiveAttitude: this.positiveAttitude,
+		negativeAttitude: this.addNegativeAttitude, 
+		addLinkFilter: this.addLinkFilter,
+		addSource: this.addSource
+	}
+
+	params_with_input = {
+		add: this.add,
+		addOr: this.addOr,
+		addBeforeDate: this.addBeforeDate, 
+		addAfterDate: this.addAfterDate
+	}
+
+	this.build = function (args) {
+		console.log("THIS.ARGS"); 
+		console.log(this.args); 
+		if (args != undefined && args != null) {
+			for (var key in args) {
+				if (params_without_input[key]) {
+					params_without_input[key](); 
+				} else if (params_with_input[key]) {
+					params_with_input[key](args[key]); 
+				}
+			}
+		}
+		for (var key in this.args) {
+			this.query = this.query + " " + this.args[key]; 
 		}
 		return this.query; 
 	}

@@ -9,11 +9,13 @@ TwitterStreamer = function() {
 	this.T = new Twit(config);
 } 
 
-TwitterStreamer.prototype.search = function (query, storageCollection) {
+TwitterStreamer.prototype.search = function (query, storageCollection, socket, callback) {
+  this.callback = callback; 
+  _this = this; 
 	this.T.get('search/tweets', { q: query, count: 100 }, function(err, data, response) {
-	  console.log(data);
-	  mongoClient(data, storageCollection);
-	})
+    _this.callback(socket, data); 
+    mongoClient(data, storageCollection);
+	});
 }
 
 TwitterStreamer.prototype.stream = function (keywords) {
