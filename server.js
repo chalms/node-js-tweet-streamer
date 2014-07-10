@@ -23,20 +23,16 @@ Server = function (callback) {
     }
 
     function writeToSocket(socket, tweets) {
-      console.log("in writetosocket -> with socket ---> "); 
-      console.log(socket); 
-      console.log("writing tweets..."); 
-      socket.write(tweets);
-      console.log("finished 'socket.write.tweets");
+      console.log("writing to socket");
+      console.log("tweets.length");
+      console.log(tweets.length);
+      socket.write(new Buffer(tweets));
     }
 
     _this.socket.on('data', function(data) {
-      console.log(data.toString()); 
       var json_data = JSON.parse(data);
-      console.log(json_data.toString()); 
       var clean_data = clean(json_data);
-      console.log(clean_data.toString());
-      _this.callback(clean_data, _this.socket, writeToSocket); 
+      _this.callback(clean_data, this, writeToSocket); 
     }); 
 
     _this.socket.on('end', function () {

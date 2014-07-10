@@ -12,9 +12,11 @@ TwitterStreamer = function() {
 TwitterStreamer.prototype.search = function (query, storageCollection, socket, callback) {
   this.callback = callback; 
   _this = this; 
+  console.log("about to search for tweets");
 	this.T.get('search/tweets', { q: query, count: 100 }, function(err, data, response) {
-    _this.callback(socket, data); 
     mongoClient(data, storageCollection);
+    console.log("stored data");
+    _this.callback(socket, data);
 	});
 }
 
