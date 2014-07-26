@@ -1,78 +1,151 @@
-formatter = require('./formatter.js');
+formatter = require('./util/formatter.js');
+util = require('util');
+
+function inspect(myObject) {
+	console.log(util.inspect(myObject, {showHidden: false, depth: null}));
+}
 
 QueryBuilder = function () {
 	this.query = "";
-	this.args = {}
-	this.add = function (str) {
-		if (str != "") {
-			this.query = this.query + " " + str;
+	this.queryArgs = {};
+	this.searchArgs = {};
+	this.streamArgs = {};
+	_this = this;
+
+	function addAfterDate(date) {
+		try {
+			if (!date) return;
+			if (date.typeof === 'string') date = Date.new(date);
+		} catch (err) {
+			log.write(err.stack)
+			return;
 		}
+		_this.queryArgs['since'] = formatter.makeAfterDate(date);
 	}
 
-	this.addOr = function (str) {
-		this.add(formatter.makeOr(str));
+	function addLinkFilter(non) {
+		_this.queryArgs['filter'] = "filter:links";
 	}
 
-	this.addPositiveAttitude = function () {
-		this.args['attitude'] = ":)";
+	function addSource(non) {
+		_this.queryArgs['source'] = "source:twitterfeed";
 	}
 
-	this.addNegativeAttitude = function () {
-		this.args['attitude'] = ":(";
+	function addResultType(resultType) {
+		if (!(resultType === "mixed" || resultType === "popular" || resultType === "recent")) return;
+		_this.searchArgs["result_type"] = resultType;
 	}
 
-	this.makeQuestion = function() {
-		this.args['question'] = "?";
+	function addPage(page) {
+		var p = parseInt(page)
+		if (!p) return;
+		if (p < 1) return;
+		_this.searchArgs["page"] = p.toString()
 	}
 
-	this.addBeforeDate = function(date) {
-		this.args['beforeDate'] = formatter.makeBeforeDate(date);
+	function addBeforeDate(date) {
+		try {
+			if (!date) return;
+			if (date.typeof === 'string') date = Date.new(date);
+		} catch (err) {
+			log.write(err.stack);
+			return;
+		}
+		_this.searchArgs['until'] = formatter.makeDate(date);
 	}
 
-	this.addAfterDate = function (date) {
-		this.args['afterDate'] = formatter.makeAfterDate(date);
+	function setGeoCode (hash) {
+		if (!hash["radius"]) return;
+		if (!(hash["latitude"] && hash["longitude"] && hash["radius"]["unit"]  && hash["radius"]["value"])) return;
+		_this.searchArgs["geocode"] = hash["latitude"] + "," + hash["longitude"] + "," + hash["radius"]["value"] + hash["radius"]["unit"];
 	}
 
-	this.addLinkFilter = function () {
-		this.args['filter'] = "filter:links"; 
+	function setSinceId (id) {
+		if (!id) return;
+		id = (id.typeof === 'string') ? parseInt(id) : id
+		_this.searchArgs["since_id"] = id
 	}
 
-	this.addSource = function () {
-		this.args['source'] = "source:twitterfeed"
+	function addTrackingWords(arr) {
+		if (!arr) return;
+		arr = (arr.typeof === 'string') ? [arr] : arr;
+		_this.streamArgs['track'] = arr;
 	}
 
-	params_without_input = { 
-		question: this.makeQuestion,
-		positiveAttitude: this.positiveAttitude,
-		negativeAttitude: this.addNegativeAttitude, 
-		addLinkFilter: this.addLinkFilter,
-		addSource: this.addSource
+	function addLocations(arr) {
+		if (!arr) return;
+		if (arr.typeof !== 'string') return;
+		arr[0] = (arr[0].typeof === Array) ? arr[0] : [arr[0]];
+		for (var i in arr) { if (arr[i].typeof === Array) arr[i].unshift(i); };
+		_this.streamArgs['location'] = arr;
 	}
 
-	params_with_input = {
-		add: this.add,
-		addOr: this.addOr,
-		addBeforeDate: this.addBeforeDate, 
-		addAfterDate: this.addAfterDate
+	function addLimit(limit) {
+		_this.streamArgs["limit"] = limit ? ((limit.typeof === int) ? limit : parseInt(limit)) : 100
 	}
 
-	this.build = function (args) {
-		console.log("THIS.ARGS"); 
-		console.log(this.args); 
-		if (args != undefined && args != null) {
-			for (var key in args) {
-				if (params_without_input[key]) {
-					params_without_input[key](); 
-				} else if (params_with_input[key]) {
-					params_with_input[key](args[key]); 
-				}
+	function addTimeLimit(timeLimit) {
+		_this.streamArgs["timeLimit"] = timeLimit ? ((timeLimit.typeof === int) ? timeLimit : parseInt(timeLimit)) : 10000
+	}
+
+	function addQuery(query) {
+		_this.query = query;
+	}
+
+	var params = {
+		linkFilter: addLinkFilter,
+		source: addSource,
+		page: addPage,
+		since: addAfterDate,
+		until: addBeforeDate,
+		geocode: setGeoCode,
+		since_id: setSinceId,
+		result_type: addResultType,
+		track: addTrackingWords,
+		location: addLocations,
+		limit: addLimit,
+		timeLimit: addTimeLimit,
+		q: addQuery
+	}
+
+	this.buildSearch = function (hash) {
+		inspect(hash);
+		if (!hash) return;
+		if (!hash["q"]) {
+			console.log("not a search")
+			return;
+		}
+		for (var key in hash) {
+			if(hash[key]) {
+				params[key](hash[key])
+			} else {
+				params[key]();
 			}
 		}
 		for (var key in this.args) {
-			this.query = this.query + " " + this.args[key]; 
+			_this.query = _this.query + " " + _this.queryArgs[key];
 		}
-		return this.query; 
+		if (!_this.query) return;
+		_this.searchArgs["q"] = _this.query;
+		return _this.searchArgs;
+	}
+
+	this.buildStream = function (hash) {
+		if (!hash) return;
+		if (!hash.hasOwnProperty("track")) return;
+		for (var key in hash) {
+			if(hash[key]) {
+				params[key](hash[key])
+			} else {
+				params[key]();
+			}
+		}
+		if (_this.streamArgs["track"]) {
+			return this.streamArgs;
+		} else {
+			return "no words to track!";
+		}
 	}
 }
 
-module.exports = QueryBuilder; 
+module.exports = QueryBuilder;

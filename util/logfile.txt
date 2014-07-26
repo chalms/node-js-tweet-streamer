@@ -1,187 +1,151 @@
-TypeError: Object [object Object] has no method 'addOr'
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:16:4)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Function.Module.runMain (module.js:497:10)
-    at startup (node.js:119:16)
-    at node.js:906:3TypeError: Object function () {
-
-this.makeDate = function (date) {
-	var dateString; 
-	if (date instanceof Date) {
-		dateString = date.getFullYear().toString() + "-"; 
-		dateString += date.getMonth().toString() + "-";
-		dateString += date.getDate().toString();
-	} else {
-		dateString = date; 
-	}
-	return dateString; 
-}
-
-this.makeAfterDate = function (date) {
-	var dateString = this.makeDate(date);
-	dateString = "since:" + dateString; 
-	return dateString; 
-}
-
-this.makeAfterDate = function (date) {
-	var dateString = this.makeDate(date);
-	dateString = "until:" + dateString; 
-	return dateString; 
-}
-
-this.makeSentence = function(str) {
-		return "\"" + str + "\""; 
-}
-
-this.makeNot = function (str) {
-		return  + "-" + word;
-}
-
-this.makeOr = function (str) {
-		return  + "OR " + word;
-}
-
-} has no method 'makeOr'
-    at addOr (/Users/jaclynfoss/Desktop/Twitter Node/query_builder.js:14:22)
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:16:4)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Function.Module.runMain (module.js:497:10)
-    at startup (node.js:119:16)
-    at node.js:906:3ReferenceError: word is not defined
-    at Object.module.exports.makeOr (/Users/jaclynfoss/Desktop/Twitter Node/formatter.js:35:21)
-    at addOr (/Users/jaclynfoss/Desktop/Twitter Node/query_builder.js:14:22)
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:16:4)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Function.Module.runMain (module.js:497:10)
-    at startup (node.js:119:16)
-    at node.js:906:3ReferenceError: query is not defined
-    at build (/Users/jaclynfoss/Desktop/Twitter Node/query_builder.js:49:10)
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:20:18)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Function.Module.runMain (module.js:497:10)
-    at startup (node.js:119:16)
-    at node.js:906:3TypeError: Object [object Object] has no method 'setBeforeDate'
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:23:6)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Function.Module.runMain (module.js:497:10)
-    at startup (node.js:119:16)
-    at node.js:906:3TypeError: Object #<Object> has no method 'makeBeforeDate'
-    at addBeforeDate (/Users/jaclynfoss/Desktop/Twitter Node/query_builder.js:30:39)
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:23:6)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Function.Module.runMain (module.js:497:10)
-    at startup (node.js:119:16)
-    at node.js:906:3ReferenceError: date is not defined
-    at addAfterDate (/Users/jaclynfoss/Desktop/Twitter Node/query_builder.js:34:52)
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:23:6)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Function.Module.runMain (module.js:497:10)
-    at startup (node.js:119:16)
-    at node.js:906:3TypeError: object is not a function
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:28:15)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Function.Module.runMain (module.js:497:10)
-    at startup (node.js:119:16)
-    at node.js:906:3Error: config must provide consumer_key
-    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/auth.js:25:13
-    at Array.forEach (native)
-    at new Auth (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/auth.js:23:12)
-    at Object.Twitter (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/twitter.js:38:15)
-    at new TwitterStreamer (/Users/jaclynfoss/Desktop/Twitter Node/twitter_streamer.js:8:11)
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:28:15)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)Error: config must provide consumer_key
-    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/auth.js:25:13
-    at Array.forEach (native)
-    at new Auth (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/auth.js:23:12)
-    at Object.Twitter (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/twitter.js:38:15)
-    at new TwitterStreamer (/Users/jaclynfoss/Desktop/Twitter Node/twitter_streamer.js:8:11)
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:28:15)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)ReferenceError: log is not defined
-    at /Users/jaclynfoss/Desktop/Twitter Node/twitter_streamer.js:13:4
-    at handler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/oarequest.js:288:14)
-    at passBackControl (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/node_modules/oauth/lib/oauth.js:374:13)
-    at IncomingMessage.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/node_modules/oauth/lib/oauth.js:386:9)
-    at IncomingMessage.EventEmitter.emit (events.js:117:20)
+{"collection":"my-new-collection","search":{"q":"Plug Power","result_type":"recent"}}TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:52:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1131:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1847:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:445:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:52:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1131:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1847:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:445:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: Cannot call method 'end' of undefined
+    at removeSock (/Users/jaclynfoss/Desktop/Twitter Node/app.js:44:19)
+    at Socket.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:73:5)
+    at Socket.EventEmitter.emit (events.js:117:20)
     at _stream_readable.js:919:16
-    at process._tickCallback (node.js:419:13)ReferenceError: log is not defined
-    at /Users/jaclynfoss/Desktop/Twitter Node/twitter_streamer.js:13:4
-    at handler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/oarequest.js:320:12)
-    at passBackControl (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/node_modules/oauth/lib/oauth.js:367:11)
-    at IncomingMessage.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/node_modules/oauth/lib/oauth.js:386:9)
-    at IncomingMessage.EventEmitter.emit (events.js:117:20)
+    at process._tickCallback (node.js:419:13)TypeError: Cannot call method 'end' of undefined
+    at removeSock (/Users/jaclynfoss/Desktop/Twitter Node/app.js:44:19)
+    at Socket.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:73:5)
+    at Socket.EventEmitter.emit (events.js:117:20)
     at _stream_readable.js:919:16
-    at process._tickCallback (node.js:419:13)TypeError: Cannot read property 'length' of undefined
-    at writeOrBuffer (_stream_writable.js:204:41)
-    at WriteStream.Writable.write (_stream_writable.js:183:11)
-    at log (/Users/jaclynfoss/Desktop/Twitter Node/log.js:4:7)
-    at /Users/jaclynfoss/Desktop/Twitter Node/twitter_streamer.js:15:4
-    at handler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/oarequest.js:288:14)
-    at passBackControl (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/node_modules/oauth/lib/oauth.js:374:13)
-    at IncomingMessage.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/node_modules/oauth/lib/oauth.js:386:9)
-    at IncomingMessage.EventEmitter.emit (events.js:117:20)
+    at process._tickCallback (node.js:419:13){"collection":"my-new-collection","search":{"q":"Plug Power","result_type":"recent"}}TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:52:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1131:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1847:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:445:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:52:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1131:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1847:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:445:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: Cannot call method 'end' of undefined
+    at removeSock (/Users/jaclynfoss/Desktop/Twitter Node/app.js:44:19)
+    at Socket.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:73:5)
+    at Socket.EventEmitter.emit (events.js:117:20)
     at _stream_readable.js:919:16
-    at process._tickCallback (node.js:419:13)TypeError: Invalid non-string/buffer chunk
-    at validChunk (_stream_writable.js:153:14)
-    at WriteStream.Writable.write (_stream_writable.js:182:12)
-    at log (/Users/jaclynfoss/Desktop/Twitter Node/log.js:4:7)
-    at /Users/jaclynfoss/Desktop/Twitter Node/twitter_streamer.js:15:4
-    at handler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/oarequest.js:320:12)
-    at passBackControl (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/node_modules/oauth/lib/oauth.js:367:11)
-    at IncomingMessage.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/node_modules/oauth/lib/oauth.js:386:9)
-    at IncomingMessage.EventEmitter.emit (events.js:117:20)
+    at process._tickCallback (node.js:419:13)TypeError: Cannot call method 'end' of undefined
+    at removeSock (/Users/jaclynfoss/Desktop/Twitter Node/app.js:44:19)
+    at Socket.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:73:5)
+    at Socket.EventEmitter.emit (events.js:117:20)
     at _stream_readable.js:919:16
-    at process._tickCallback (node.js:419:13)ReferenceError: twitter is not defined
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:32:1)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Function.Module.runMain (module.js:497:10)
-    at startup (node.js:119:16)
-    at node.js:906:3ReferenceError: twitter is not defined
-    at Object.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:32:1)
-    at Module._compile (module.js:456:26)
-    at Object.Module._extensions..js (module.js:474:10)
-    at Module.load (module.js:356:32)
-    at Function.Module._load (module.js:312:12)
-    at Function.Module.runMain (module.js:497:10)
-    at startup (node.js:119:16)
-    at node.js:906:3TypeError: Cannot call method 'collection' of null
-    at /Users/jaclynfoss/Desktop/Twitter Node/mongo_client.js:10:24
-    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/mongo_client.js:406:11
-    at process._tickCallback (node.js:419:13)Error: writeConcern requires callback
-    at removeWithWriteCommands (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/core.js:311:11)
-    at Collection.remove (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/core.js:367:12)
-    at /Users/jaclynfoss/Desktop/Twitter Node/mongo_client.js:12:15
-    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/mongo_client.js:472:11
+    at process._tickCallback (node.js:419:13){"collection":"my-new-collection","search":{"q":"Plug Power","result_type":"recent"}}TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:52:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1131:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1847:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:445:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:52:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1131:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1847:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:445:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: Cannot call method 'end' of undefined
+    at removeSock (/Users/jaclynfoss/Desktop/Twitter Node/app.js:44:19)
+    at Socket.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:73:5)
+    at Socket.EventEmitter.emit (events.js:117:20)
+    at _stream_readable.js:919:16
+    at process._tickCallback (node.js:419:13)TypeError: Cannot call method 'end' of undefined
+    at removeSock (/Users/jaclynfoss/Desktop/Twitter Node/app.js:44:19)
+    at Socket.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:73:5)
+    at Socket.EventEmitter.emit (events.js:117:20)
+    at _stream_readable.js:919:16
+    at process._tickCallback (node.js:419:13){"collection":"my-new-collection","search":{"q":"Plug Power","result_type":"recent"}}TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:52:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1131:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1847:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:445:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:52:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1131:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1847:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:445:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: Cannot call method 'end' of undefined
+    at removeSock (/Users/jaclynfoss/Desktop/Twitter Node/app.js:44:19)
+    at Socket.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:73:5)
+    at Socket.EventEmitter.emit (events.js:117:20)
+    at _stream_readable.js:919:16
+    at process._tickCallback (node.js:419:13)TypeError: Cannot call method 'end' of undefined
+    at removeSock (/Users/jaclynfoss/Desktop/Twitter Node/app.js:44:19)
+    at Socket.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:73:5)
+    at Socket.EventEmitter.emit (events.js:117:20)
+    at _stream_readable.js:919:16
+    at process._tickCallback (node.js:419:13){"collection":"my-new-collection","search":{"q":"Plug Power","result_type":"recent"}}TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:52:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1131:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1847:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:445:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:52:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1131:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1847:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:445:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: Cannot call method 'end' of undefined
+    at removeSock (/Users/jaclynfoss/Desktop/Twitter Node/app.js:44:19)
+    at Socket.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:73:5)
+    at Socket.EventEmitter.emit (events.js:117:20)
+    at _stream_readable.js:919:16
+    at process._tickCallback (node.js:419:13)TypeError: Cannot call method 'end' of undefined
+    at removeSock (/Users/jaclynfoss/Desktop/Twitter Node/app.js:44:19)
+    at Socket.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/app.js:73:5)
+    at Socket.EventEmitter.emit (events.js:117:20)
+    at _stream_readable.js:919:16
     at process._tickCallback (node.js:419:13)

@@ -1,0 +1,24 @@
+{
+  "search": {
+    "q": "GWPH OR GW Pharmaceuticals", //<----- this is the new query string
+    "page": 4,
+    "since": "2013-06-01", //<---- day-month-year
+    "until": "2014-01-01",
+    "geocode": {
+      "latitude": 113.123,
+      "longitude": -20.00,
+      "radius": {
+        "unit":"mi", //or can be 'km'
+        "value":5
+      }
+    },
+    "since_id": 12353, //<--- the id of another tweet
+    "result_type": "popular" //<-- can also be recent or mixed
+  },
+  "stream": {
+    "track":["GWPH", "GW pharma", "GW Pharmaceuticals"],
+    "location":[123.1233, 0, 123.33, 100.00], //<-- some bounded coordinate box
+    "limit": 200, //<- default is 100
+    "timeLimit": 10000 //<- default is 3000 (3 seconds)
+  }
+}
