@@ -1,7 +1,6 @@
 {
   "search": {
     "q": "GWPH OR GW Pharmaceuticals", //<----- this is the new query string
-    "page": 4,
     "since": "2013-06-01", //<---- day-month-year
     "until": "2014-01-01",
     "geocode": {

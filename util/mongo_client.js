@@ -1,10 +1,7 @@
 var mong = require('mongodb').MongoClient;
-var url = "mongodb://Andrew:twitter@ds053469.mongolab.com:53469/tweets";
+var url = "";
 
-module.exports = function (data, collectionName, funct) {
-	function callMe() {
-		funct("200");
-	}
+module.exports = function(data, result, fn) {
 	mong.connect(url, function(err, db) {
 	  if(!err) {
 	    console.log("We are connected");
@@ -21,14 +18,13 @@ module.exports = function (data, collectionName, funct) {
 	  }
 
 	  console.log(data);
-	  console.log("that was the data");
 	  collection.insert(data, {w:1}, function(err, result) {
 	  	if (!err) {
 	  		console.log(result);
-	  		callMe();
+	  		fn(result);
 	  	} else {
 	  		console.log(err);
 	  	}
 	  });
 	});
-}
+};

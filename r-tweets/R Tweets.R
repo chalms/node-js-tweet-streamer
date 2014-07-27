@@ -1,54 +1,19 @@
 library(rmongodb)
 library(rjson)
+library(RCurl)
 
-serverHost <<- "localhost"
-serverPort <<- "3000"
-
+serverHost <<- "http://localhost:3000/query.json"
 max_id <<- 0
 min_id <<- 0
-host <<- "ds053469.mongolab.com:53469"
+host <<- ""
 db <<- "tweets"
 username <- "Janice"
 password <- "twitter"
 
-
 # Create Database
 mongo <<- mongo.create(host=host ,db="tweets", username=username, password=password)
 
-getTweets <- function(host, port, query, print) {
-  # create a socket to the Node JS server to get the tweet data
-  socket <- make.socket(host, port)
-
-  # predefine on.close for the socket
-  on.exit(close.socket(socket))
-
-  # send the queryJSON to the node.js server
-  write.socket(socket, query)
-
-  # write a empty character to the output so that
-  # a string can be appended to it without major loop modifications
-  output <- character(0)
-
-  # continue to output the response from the server
-  # until there is no more text
-  repeat{
-      ss <- read.socket(socket)
-      if (ss == "") break
-      output <- paste(output, ss)
-  }
-  # close the socket
-  close.socket(socket)
-
-  # take the output text (in JSON format, and parse it into an R object)
-  json_data <- fromJSON(output)
-
-  # print the object and return it
-  print(json_data)
-  return(json_data);
-}
-
 dbConnect <- function(DBNS, hostName, mongo) {
-
   setCursor <- function(mongo) {
     # get the database attributes from the server to help
     # define our database requests
@@ -87,7 +52,6 @@ dbConnect <- function(DBNS, hostName, mongo) {
 
         # assign the 'id' attribute of the statuses documents to a variable k
         k <- i$id
-
         # set k to the min and max values if it deserves to be
         if (k > max_id) max_id <<- k;
         if (k < min_id || min_id == 0) min_id <<- k;
@@ -113,14 +77,14 @@ dbConnect <- function(DBNS, hostName, mongo) {
 getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
   # repeat this loop until end - start iterations have occured
 
-  repeat {
+  # repeat {
       # Name each collection is based of the twitter request that generated it
       # That way we can use the function db.get.collection('collectionName')
       # from the database and only return new data
       # We change the name of each collection by appending the value of the current
       # loop iteration
 
-      dbCollection <- paste(dbCollection, start, sep = "-")
+      # dbCollection <- paste(dbCollection, start, sep = "-")
       # Boolean value 'goBackInTime' provides a way to break up large queries
       # into smaller ones without any duplicates. After the first request,
       # We find the tweet with the lowest ID (that means it was the first created in
@@ -131,40 +95,38 @@ getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
       # the 'min' or 'max' id of the following request, and thus whether we search, forwards
       # or backwards throughout twitter history.
 
-      if (goBackInTime && (min_id != 0)) queryParameters$max_id <- min_id;
-      if (!goBackInTime && (max_id != 0)) queryParamters$since_id <- max_id;
+      # if (goBackInTime && (min_id != 0)) queryParameters$max_id <- min_id;
+      # if (!goBackInTime && (max_id != 0)) queryParamters$since_id <- max_id;
       # take the query parameters and convert them into a JSON string (that the server will understand)
 
-      query <<- toJSON(queryParameters)
+      # query <<- toJSON(queryParameters)
       # connect to the server and send request for the twitter data
-
-      twitterData <- getTweets(serverHost, serverPort, query, print)
+      # response <- postForm(serverHost, .params = query, curl = curl, style="POST")
       # A server response of 200 means that our request was executed and uploaded to the database successfully. Test if it was successful. Exit the program if it was not.
-
-    if(twitterData == "200" || twitterData == 200) {
+    # if(response  == "200" || response == 200) {
       # At this time we then call the function 'dbConnect' to download the frames from the new collection to the current R environment
-      dbConnect(dbCollection, host, mongo)
-    } else {
+       dbConnect(dbCollection, host, mongo)
+    # } else {
       # if a response of 200 was not received then an error must have occured
       # print the error and exit
-      print(twitterData)
+  #     print(html)
 
-      break;
-    }
-   start <- (start + 1)
-   if (start > end) break;
-  }
+  #     break;
+  #   }
+  #  start <- (start + 1)
+  #  if (start > end) break;
+  # }
 }
 
 # DB collection named after this run of the program (so the query, because we only save unique data!)
-query <- "Plug Power"
-dbCollection <- query
+query <- "PLUG OR Plug power"
+dbCollection <- "GWPH"
 
 # query parameter (you can choose to modify these in the loop above after each iteration)
 initialParameters <- list(
   collection = dbCollection,
   search = list(
-    q = "Plug Power", 
+    q = query,
     result_type = "recent"
   )
 )

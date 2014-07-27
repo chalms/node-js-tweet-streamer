@@ -17,16 +17,42 @@ TwitterStreamer = function(collectionName) {
   this.collection = collectionName;
 }
 
-TwitterStreamer.prototype.search = function (args, callback) {
-  _this = this;
-  console.log("search args: ");
+stubTweets = function (url, args, fn) {
+  inspect(url);
   inspect(args);
-	this.T.get('search/tweets', args, function(err, data, response) {
+  var data = {
+    statuses: [{
+      id:2134567898765432,
+      text:"Hello!"
+    }, {
+      id:23456789024356,
+      text:"sup?"
+    }]
+  }
+  fn("",data,"");
+};
+
+function getCollection(d, fn) {
+  console.log(result);
+  var value;
+  // this.T.get('search/tweets', args, function(err, data, response) {
+  stubTweets('search/tweets', args, function (err, data, reponse) {
     if (err) {
-      callback(err.message);
+      log.write(err.message);
     }
-    mongoClient(data, _this.collection, callback);
-	});
+    mongoClient(data, _this.collection, function (val) {
+      value = val;
+    });
+  });
+  return value;
+};
+
+TwitterStreamer.prototype.search = function(args) {
+  var b;
+  getCollection(args, function(return_value) {
+    b = return_value;
+  })
+  return b;
 }
 
 TwitterStreamer.prototype.stream = function (args) {
@@ -89,3 +115,7 @@ TwitterStreamer.prototype.stream = function (args) {
 }
 
 module.exports = TwitterStreamer;
+
+
+
+
