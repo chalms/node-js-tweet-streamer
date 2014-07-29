@@ -17,21 +17,6 @@ TwitterStreamer = function(collectionName) {
   this.collection = collectionName;
 }
 
-// stubTweets = function (url, args, fn) {
-//   inspect(url);
-//   inspect(args);
-//   var data = {
-//     statuses: [{
-//       id:2134567898765432,
-//       text:"Hello!"
-//     }, {
-//       id:23456789024356,
-//       text:"sup?"
-//     }]
-//   }
-//   fn("",data,"");
-// };
-
 
 TwitterStreamer.prototype.search = function(args, fn) {
   _this = this;

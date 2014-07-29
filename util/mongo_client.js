@@ -1,7 +1,8 @@
 var mong = require('mongodb').MongoClient;
-var url = "mongodb://Andrew:twitter@ds053469.mongolab.com:53469/tweets";
+var url = "";
 
 module.exports = function(data, collectionName, fn) {
+
 	mong.connect(url, function(err, db) {
 		console.log(db)
 	  if(!err) {
