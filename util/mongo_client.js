@@ -1,10 +1,13 @@
 var mong = require('mongodb').MongoClient;
-var url = "";
+var url = "mongodb://Andrew:twitter@ds053469.mongolab.com:53469/tweets";
 
-module.exports = function(data, result, fn) {
+module.exports = function(data, collectionName, fn) {
 	mong.connect(url, function(err, db) {
+		console.log(db)
 	  if(!err) {
 	    console.log("We are connected");
+	  } else {
+	  	console.log(err);
 	  }
 	  console.log(collectionName);
 	  var collection;
@@ -12,16 +15,13 @@ module.exports = function(data, result, fn) {
 	   collection = db.collection(collectionName);
 	   collection.count();
 	  } catch (err) {
-	  	log.write(err);
 	  	db.createCollection(collectionName)
 	  	collection = db.collection(collectionName);
 	  }
-
-	  console.log(data);
 	  collection.insert(data, {w:1}, function(err, result) {
 	  	if (!err) {
-	  		console.log(result);
 	  		fn(result);
+	  		return result;
 	  	} else {
 	  		console.log(err);
 	  	}

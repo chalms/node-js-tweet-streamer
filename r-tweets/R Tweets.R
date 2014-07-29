@@ -1,11 +1,14 @@
 library(rmongodb)
 library(rjson)
+library(bitops)
 library(RCurl)
+library(plyr)
 
-serverHost <<- "http://localhost:3000/query.json"
+serverHost <<- "http://limitless-wildwood-6059.herokuapp.com/query.json"
 max_id <<- 0
 min_id <<- 0
-host <<- ""
+host <<- "ds053469.mongolab.com:53469/"
+#host <<- "localhost:27017/"
 db <<- "tweets"
 username <- "Janice"
 password <- "twitter"
@@ -13,6 +16,7 @@ password <- "twitter"
 # Create Database
 mongo <<- mongo.create(host=host ,db="tweets", username=username, password=password)
 
+#mongo <<- mongo.create(host=host ,db="tweets") #username=username, password=password)
 dbConnect <- function(DBNS, hostName, mongo) {
   setCursor <- function(mongo) {
     # get the database attributes from the server to help
@@ -34,24 +38,22 @@ dbConnect <- function(DBNS, hostName, mongo) {
   loopThroughCursor <- function(cursor) {
     i <- 0
     while (mongo.cursor.next(cursor)) {
-
+      print("moving through cursor")
       # convert the current cursor document into a R-readible format
       # and assign to temp.
-      temp <- mongo.bson.to.list(mongo.cursor.value(cursor))
-
+      tmp =  mongo.bson.to.list(mongo.cursor.value(cursor))
       # print temp to show you the data
-      print(temp)
-
-      # assign temp$statuses to list of statuses
-      # whereas temp is an object, 'listOfStatuses' is uni-dimensional and
-      # we can iterate through each status
-      listOfStatuses <-temp$statuses
-
+      tmp.df = as.data.frame(t(unlist(tmp)), stringsAsFactors = F)
+      # bind to the master dataframe
+      listOfStatuses = rbind.fill(data.frame(stringsAsFactors = TRUE), tmp.df)
+      
+      print(str(listOfStatuses))
       # get each status
-      for (i in listOfStatuses) {
+      for (i in listOfStatuses$statuses) {
 
         # assign the 'id' attribute of the statuses documents to a variable k
         k <- i$id
+
         # set k to the min and max values if it deserves to be
         if (k > max_id) max_id <<- k;
         if (k < min_id || min_id == 0) min_id <<- k;
@@ -66,25 +68,29 @@ dbConnect <- function(DBNS, hostName, mongo) {
   # start looping through the documents in the collection
 
   if (mongo.is.connected(mongo)) {
+    print("mongo")
     cursor <- setCursor(mongo)
+    
     loopThroughCursor(cursor)
 
     # I forget why I put this here...
-    data.frame(stringsAsFactors = FALSE)
+  } else {
+    
+    loopThroughCursor(setCursor(mongo))
   }
 }
 
 getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
   # repeat this loop until end - start iterations have occured
-
-  # repeat {
+  q <- start
+  repeat {
       # Name each collection is based of the twitter request that generated it
       # That way we can use the function db.get.collection('collectionName')
       # from the database and only return new data
       # We change the name of each collection by appending the value of the current
       # loop iteration
-
-      # dbCollection <- paste(dbCollection, start, sep = "-")
+      if (start > q)
+      dbCollection <- paste(dbCollection, start, sep = "-")
       # Boolean value 'goBackInTime' provides a way to break up large queries
       # into smaller ones without any duplicates. After the first request,
       # We find the tweet with the lowest ID (that means it was the first created in
@@ -95,32 +101,30 @@ getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
       # the 'min' or 'max' id of the following request, and thus whether we search, forwards
       # or backwards throughout twitter history.
 
-      # if (goBackInTime && (min_id != 0)) queryParameters$max_id <- min_id;
-      # if (!goBackInTime && (max_id != 0)) queryParamters$since_id <- max_id;
+     # if (goBackInTime && (min_id != 0)) queryParameters$max_id <- min_id;
+    #  if (!goBackInTime && (max_id != 0)) queryParamters$since_id <- max_id;
       # take the query parameters and convert them into a JSON string (that the server will understand)
 
-      # query <<- toJSON(queryParameters)
+      query <<- toJSON(queryParameters)
+      print(query)
       # connect to the server and send request for the twitter data
-      # response <- postForm(serverHost, .params = query, curl = curl, style="POST")
+     response <- postForm(serverHost, .opts= list(postfields = query ,httpheader = c('Content-Type' = 'application/json', Accept = 'application/json' )))
       # A server response of 200 means that our request was executed and uploaded to the database successfully. Test if it was successful. Exit the program if it was not.
-    # if(response  == "200" || response == 200) {
       # At this time we then call the function 'dbConnect' to download the frames from the new collection to the current R environment
-       dbConnect(dbCollection, host, mongo)
-    # } else {
-      # if a response of 200 was not received then an error must have occured
-      # print the error and exit
-  #     print(html)
-
-  #     break;
-  #   }
-  #  start <- (start + 1)
-  #  if (start > end) break;
-  # }
+      if (response) {
+        print(response);
+        dbConnect(dbCollection, host, mongo)
+      } else {
+        break;
+      }
+     start <- (start + 1)
+    if (start > end) break;
+  }
 }
 
 # DB collection named after this run of the program (so the query, because we only save unique data!)
-query <- "PLUG OR Plug power"
-dbCollection <- "GWPH"
+query <- "dog"
+dbCollection <- "dogs"
 
 # query parameter (you can choose to modify these in the loop above after each iteration)
 initialParameters <- list(

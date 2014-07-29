@@ -1,35 +1,43 @@
 {
-    "bundledDependencies": [
-        "package/package.json",
-        "package/.npmignore",
-        "package/app.js",
-        "package/query_builder.js",
-        "package/twitter_streamer.js",
-        "package/documentation/READ ME.md",
-        "package/documentation/example.json",
-        "package/r-tweets/R Tweets.R",
-        "package/util/config1.js",
-        "package/util/formatter.js",
-        "package/util/log.js",
-        "package/util/mongo_client.js",
-        "package/util/logfile.txt",
-        "mongoose",
-        "mongodb",
-        "twit"
-    ],
-    "engines": {
-        "node": "0.10.x"
-    },
-    "name": "Tweet-Server",
-    "scripts": {
-        "start": "node app.js"
-    },
-    "subdomain": "chalm-twitter",
-    "version": "0.0.0-6",
-    "repository": {
-        "type": "git"
-    },
-    "dependencies": {
-        "express": "3.x"
-    }
+  "engines": {
+    "node": "0.10.x"
+  },
+  "name": "Tweet-Server",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "subdomain": "chalm-twitter",
+  "version": "0.0.0-6",
+  "repository": {
+    "type": "git"
+  },
+  "dependencies": {
+    "express": "3.x"
+  },
+  "bundleDependencies": [
+    "package/package.json",
+    "package/.npmignore",
+    "package/app.js",
+    "package/query_builder.js",
+    "package/twitter_streamer.js",
+    "package/documentation/READ ME.md",
+    "package/documentation/example.json",
+    "package/r-tweets/R Tweets.R",
+    "package/util/config1.js",
+    "package/util/formatter.js",
+    "package/util/log.js",
+    "package/util/mongo_client.js",
+    "package/util/logfile.txt",
+    "mongoose",
+    "mongodb",
+    "twit"
+  ],
+  "description": "The tweet server",
+  "main": "app.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {},
+  "author": "Andrew Chalmers",
+  "license": "ISC"
 }

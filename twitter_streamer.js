@@ -17,42 +17,37 @@ TwitterStreamer = function(collectionName) {
   this.collection = collectionName;
 }
 
-stubTweets = function (url, args, fn) {
-  inspect(url);
-  inspect(args);
-  var data = {
-    statuses: [{
-      id:2134567898765432,
-      text:"Hello!"
-    }, {
-      id:23456789024356,
-      text:"sup?"
-    }]
-  }
-  fn("",data,"");
-};
+// stubTweets = function (url, args, fn) {
+//   inspect(url);
+//   inspect(args);
+//   var data = {
+//     statuses: [{
+//       id:2134567898765432,
+//       text:"Hello!"
+//     }, {
+//       id:23456789024356,
+//       text:"sup?"
+//     }]
+//   }
+//   fn("",data,"");
+// };
 
-function getCollection(d, fn) {
-  console.log(result);
-  var value;
-  // this.T.get('search/tweets', args, function(err, data, response) {
-  stubTweets('search/tweets', args, function (err, data, reponse) {
+
+TwitterStreamer.prototype.search = function(args, fn) {
+  _this = this;
+  _this.T.get('search/tweets', args, function(err, data, response) {
     if (err) {
-      log.write(err.message);
+      console.log(data);
+    } else {
+      console.log(data);
     }
-    mongoClient(data, _this.collection, function (val) {
-      value = val;
+    mongoClient(data, _this.collection, function (data_result) {
+      if (data_result) {
+        fn("{ status: 200}");
+      }
+      return;
     });
   });
-  return value;
-};
-
-TwitterStreamer.prototype.search = function(args) {
-  var b;
-  getCollection(args, function(return_value) {
-    b = return_value;
-  })
-  return b;
 }
 
 TwitterStreamer.prototype.stream = function (args) {
