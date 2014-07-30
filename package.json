@@ -30,6 +30,8 @@
     "package/util/logfile.txt",
     "mongoose",
     "mongodb",
+    "body-parser",
+    "sys",
     "twit"
   ],
   "description": "The tweet server",
