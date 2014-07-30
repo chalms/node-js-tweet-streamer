@@ -45,7 +45,7 @@ dbConnect <- function(DBNS, hostName, mongo) {
       tmp.df = as.data.frame(t(unlist(tmp)), stringsAsFactors = F)
       # bind to the master dataframe
       listOfStatuses = rbind.fill(data.frame(stringsAsFactors = TRUE), tmp.df)
-      
+
       print(str(listOfStatuses))
       # get each status
       for (i in listOfStatuses$statuses) {
@@ -68,12 +68,12 @@ dbConnect <- function(DBNS, hostName, mongo) {
   if (mongo.is.connected(mongo)) {
     print("mongo")
     cursor <- setCursor(mongo)
-    
+
     loopThroughCursor(cursor)
 
     # I forget why I put this here...
   } else {
-    
+
     loopThroughCursor(setCursor(mongo))
   }
 }
@@ -93,7 +93,7 @@ getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
        # dbCollection <- paste(dbCollection, start, sep = "-")
 
      #   dbCollection <- paste(dbCollection, start, sep = "-")
-        
+
       # Boolean value 'goBackInTime' provides a way to break up large queries
       # into smaller ones without any duplicates. After the first request,
       # We find the tweet with the lowest ID (that means it was the first created in
@@ -104,8 +104,8 @@ getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
       # the 'min' or 'max' id of the following request, and thus whether we search, forwards
       # or backwards throughout twitter history.
 
-   #   if (goBackInTime && (min_id != 0)) queryParameters$max_id <- min_id;
-   #  if (!goBackInTime && (max_id != 0)) queryParamters$since_id <- max_id;
+      if (goBackInTime && (min_id != 0)) queryParameters$max_id <- min_id;
+     if (!goBackInTime && (max_id != 0)) queryParamters$since_id <- max_id;
       # take the query parameters and convert them into a JSON string (that the server will understand)
 
       query <<- toJSON(queryParameters)
@@ -126,23 +126,9 @@ getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
 }
 
 # DB collection named after this run of the program (so the query, because we only save unique data!)
-query <- "dog"
-dbCollection <- "dogs"
-      # if (goBackInTime && (min_id != 0)) queryParameters$max_id <- min_id;
-      # if (!goBackInTime && (max_id != 0)) queryParamters$since_id <- max_id;
-      # take the query parameters and convert them into a JSON string (that the server will understand)
-      # connect to the server and send request for the twitter data
-  
-      # A server response of 200 means that our request was executed and uploaded to the database successfully. Test if it was successful. Exit the program if it was not.
-      # At this time we then call the function 'dbConnect' to download the frames from the new collection to the current R environment
-       dbConnect(dbCollection, host, mongo)
-
-  #  start <- (start + 1)
-  #  if (start > end) break;
-  # }
-
-
-
+query <- "Andrew"
+dbCollection <- "new-dogs"
+dbConnect(dbCollection, host, mongo)
 
 # query parameter (you can choose to modify these in the loop above after each iteration)
 initialParameters <- list(
