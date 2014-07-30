@@ -23,19 +23,16 @@ process.on('uncaughtException', function (err) {
   console.log('Caught exception: ' + err.stack);
   log.write(err.stack);
 });
-// app.use(express.bodyParser());
-app.get('/', function(req, res){
-  res.render('index', {title: 'Twitter Streamer'});
-});
-
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+// app.use(express.bodyParser());
 app.get('/', function(req, res){
   res.render('index', {title: 'Twitter Streamer'});
 });
+
 
 function inspect(myObject) {
   console.log(util.inspect(myObject, {showHidden: false, depth: null}));

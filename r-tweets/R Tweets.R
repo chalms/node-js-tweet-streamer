@@ -4,7 +4,7 @@ library(bitops)
 library(RCurl)
 library(plyr)
 
-serverHost <<- "http://limitless-wildwood-6059.herokuapp.com/query.json"
+serverHost <<- "localhost:3000/query.json"
 max_id <<- 0
 min_id <<- 0
 host <<- "ds053469.mongolab.com:53469/"
@@ -81,15 +81,15 @@ dbConnect <- function(DBNS, hostName, mongo) {
 getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
   # repeat this loop until end - start iterations have occured
 
-  q <- start
-  repeat {
+  #q <- start
+ # repeat {
 
       # Name each collection is based of the twitter request that generated it
       # That way we can use the function db.get.collection('collectionName')
       # from the database and only return new data
       # We change the name of each collection by appending the value of the current
       # loop iteration
-      if (start > q)
+   #   if (start > q)
        # dbCollection <- paste(dbCollection, start, sep = "-")
 
      #   dbCollection <- paste(dbCollection, start, sep = "-")
@@ -104,8 +104,8 @@ getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
       # the 'min' or 'max' id of the following request, and thus whether we search, forwards
       # or backwards throughout twitter history.
 
-      if (goBackInTime && (min_id != 0)) queryParameters$max_id <- min_id;
-     if (!goBackInTime && (max_id != 0)) queryParamters$since_id <- max_id;
+  #    if (goBackInTime && (min_id != 0)) queryParameters$max_id <- min_id;
+  #   if (!goBackInTime && (max_id != 0)) queryParamters$since_id <- max_id;
       # take the query parameters and convert them into a JSON string (that the server will understand)
 
       query <<- toJSON(queryParameters)
@@ -120,9 +120,9 @@ getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
       } else {
         break;
       }
-     start <- (start + 1)
-    if (start > end) break;
-  }
+ #    start <- (start + 1)
+ #   if (start > end) break;
+ # }
 }
 
 # DB collection named after this run of the program (so the query, because we only save unique data!)
