@@ -23,6 +23,7 @@ process.on('uncaughtException', function (err) {
   console.log('Caught exception: ' + err.stack);
   log.write(err.stack);
 });
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: true
