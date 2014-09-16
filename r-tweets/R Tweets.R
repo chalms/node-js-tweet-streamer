@@ -140,7 +140,7 @@ initialParameters <- list(
   collection = dbCollection,
   search = list(
     q = query,
-    until = "2013-06-01"
+    since = "2013-06-01"
   )
 )
 

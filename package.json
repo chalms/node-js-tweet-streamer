@@ -21,6 +21,7 @@
     "package/package.json",
     "package/.npmignore",
     "package/app.js",
+    "package/query_issuer.js",
     "package/query_builder.js",
     "package/twitter_streamer.js",
     "package/documentation/READ ME.md",
@@ -29,7 +30,9 @@
     "package/util/formatter.js",
     "package/util/log.js",
     "package/util/mongo_client.js",
-    "package/util/logfile.txt"
+    "package/util/logfile.txt",
+    "package/util/record.js",
+    "package/util/tweetfile.txt"
   ],
 
   "description": "The tweet server",
