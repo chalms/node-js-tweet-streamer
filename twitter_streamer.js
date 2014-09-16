@@ -2,6 +2,10 @@ var config = require('./util/config1.js');
 var log = require('./util/log.js');
 mongoClient = require('./util/mongo_client.js');
 Twit = require('twit');
+Record = require('./util/record.js');
+
+var Transform = require('stream').Transform;
+var parser = new Transform({ encoding: 'utf8'});
 
 function inspect(myObject) {
   console.log(util.inspect(myObject, {showHidden: false, depth: null}));
@@ -13,20 +17,30 @@ process.on('uncaughtException', function (err) {
 });
 
 TwitterStreamer = function(collectionName) {
+  console.log("New Twitter Streamer Created!")
 	this.T = new Twit(config);
   this.collection = collectionName;
 }
 
-
 TwitterStreamer.prototype.search = function(args, fn) {
+  console.log("~~~~~~~~~search args below~~~~~~~~~~~ ");
+  console.log(args);
   _this = this;
   _this.T.get('search/tweets', args, function(err, data, response) {
     if (err) {
-      console.log(data);
+      console.log("~~~~~~ search returned error, as seen below~~~~~~~~");
+      console.log(err);
     } else {
+      console.log("~~~~~~~ no error found, data below ~~~~~~~~");
       console.log(data);
+    // "returned data from search/tweets")
+   //    Record.write(data);
+    //  console.log("that was the data");
     }
+    console.log("~~~~~~~~ calling mongo client with data and _this.collection ~~~~~~~~")
     mongoClient(data, _this.collection, function (data_result) {
+      console.log("~~~~~~~~~~~ the mongo data result is below ~~~~~~~");
+      console.log(data_result);
       if (data_result) {
         fn("{ status: 200}");
       }

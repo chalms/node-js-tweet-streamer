@@ -13,12 +13,16 @@ module.exports.makeDate = function (date) {
 module.exports.makeAfterDate = function (date) {
 	var dateString = this.makeDate(date);
 	dateString = "since:" + dateString;
+	console.log("makeAfterDate");
+	console.log(dateString);
 	return dateString;
 }
 
 module.exports.makeBeforeDate = function (date) {
 	var dateString = this.makeDate(date);
 	dateString = "until:" + dateString;
+	console.log("makeBeforeDate");
+	console.log(dateString);
 	return dateString;
 }
 

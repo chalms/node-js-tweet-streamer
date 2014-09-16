@@ -10,6 +10,7 @@ QueryBuilder = function () {
 	this.queryArgs = {};
 	this.searchArgs = {};
 	this.streamArgs = {};
+	this.dateArgs = {};
 	_this = this;
 
 	function addAfterDate(date) {
@@ -20,7 +21,7 @@ QueryBuilder = function () {
 			log.write(err.stack)
 			return;
 		}
-		_this.queryArgs['since'] = formatter.makeAfterDate(date);
+		_this.dateArgs['since'] = formatter.makeDate(date);
 	}
 
 	function addLinkFilter(non) {
@@ -51,7 +52,8 @@ QueryBuilder = function () {
 			log.write(err.stack);
 			return;
 		}
-		_this.searchArgs['until'] = formatter.makeDate(date);
+		console.log(formatter.makeDate(date));
+		_this.dateArgs['until'] = formatter.makeDate(date);
 	}
 
 	function setGeoCode (hash) {
@@ -115,6 +117,8 @@ QueryBuilder = function () {
 			console.log("not a search")
 			return;
 		}
+
+		console.log("building search!");
 		for (var key in hash) {
 			if(hash[key]) {
 				params[key](hash[key])
@@ -122,9 +126,19 @@ QueryBuilder = function () {
 				params[key]();
 			}
 		}
+
 		for (var key in this.args) {
 			_this.query = _this.query + " " + _this.queryArgs[key];
 		}
+
+		for (var key in _this.dateArgs) {
+			var dateArgsString = " " + key + ":" + _this.dateArgs[key];
+
+			_this.query = _this.query + dateArgsString;
+			console.log(dateArgsString);
+		}
+
+
 		if (!_this.query) return;
 		_this.searchArgs["q"] = _this.query;
 		return _this.searchArgs;
@@ -146,6 +160,8 @@ QueryBuilder = function () {
 			return "no words to track!";
 		}
 	}
+
+	console.log("Query builder built");
 }
 
 module.exports = QueryBuilder;
