@@ -15,10 +15,7 @@ username <- "Janice"
 password <- "twitter"
 
 # Create Database
-# mongo <<- mongo.create(host=host ,db="tweets", username=username, password=password)
-
-
-mongo <<- mongo.create(host=host ,db="tweets")
+ mongo <<- mongo.create(host=host ,db="tweets", username=username, password=password)
 
 
 dbConnect <- function(DBNS, hostName, mongo) {
