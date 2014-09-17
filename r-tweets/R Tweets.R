@@ -196,10 +196,8 @@ dbConnect(dbCollection, host, mongo)
 # query parameter (you can choose to modify these in the loop above after each iteration)
 initialParameters <- list(
   collection = dbCollection,
-  topsy = list(
-    q = query,
-    since = "2013-06-01",
-    until = "2014-01-01"
+  user = list(
+    screen_name = "offportal"
   )
 )
 
