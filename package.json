@@ -16,6 +16,7 @@
     "express": "^3.15.2",
     "mongodb": "^1.4.7",
     "twit": "^1.1.18",
+    "phantomjs": "~1.9.7-5",
     "phantom":"0.6.5",
     "cheerio":"0.17.0",
     "request":"2.42.0",
