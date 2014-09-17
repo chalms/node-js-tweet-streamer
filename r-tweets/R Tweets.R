@@ -128,16 +128,17 @@ getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
 }
 
 # DB collection named after this run of the program (so the query, because we only save unique data!)
-query <- "stock"
-dbCollection <- "blood-barrier"
+query <- "GWPH"
+dbCollection <- "topsy-test"
 dbConnect(dbCollection, host, mongo)
 
 # query parameter (you can choose to modify these in the loop above after each iteration)
 initialParameters <- list(
   collection = dbCollection,
-  search = list(
+  topsy = list(
     q = query,
-    since = "2013-06-01"
+    since = "2013-06-01",
+    until = "2014-01-01"
   )
 )
 
