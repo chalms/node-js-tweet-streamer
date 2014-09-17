@@ -34,8 +34,8 @@ exports.launch = function (jsonStr, collection, otherFn) {
      return "http://topsy.com/s?q=" + query + timeString;
   }
 
-  function passBackStack(data) {
-
+  function passBackStack(data, fn) {
+    // console.log("passBackStack called");
     var jsonStack = [];
     while(data.length > 0) {
       var str = "https://api.twitter.com/1/statuses/oembed.json?id=";
@@ -43,24 +43,30 @@ exports.launch = function (jsonStr, collection, otherFn) {
       var newUrl = str + idString;
       request(newUrl, function (error, response, html) {
         if (!error && response.statusCode == 200) {
-          console.log(html);
+          // console.log(html);
           var theJSON = JSON.parse(html);
-          console.log(theJSON);
+          // console.log(theJSON);
           jsonStack.push(theJSON);
         }
       });
     }
-    return jsonStack;
+    fn(jsonStack);
   }
 
-  function runIt(fn) {
-      mongoClient(fn(), _this.collection, function (data_result) {
-      console.log("~~~~~~~~~~~ the mongo data result is below ~~~~~~~");
-      console.log(data_result);
-      if (data_result) {
-        _this.biggerCallback("{ status: 200}");
-      }
-      return;
+  function runIt(stack) {
+    // console.log("Inside Runit()");
+    // console.log(stack);
+    passBackStack(stack, function (passedStack) {
+      // console.log("Load to mongo callback with: ");
+      // console.log(passedStack);
+      mongoClient(passedStack, _this.collection, function (data_result) {
+        // console.log("~~~~~~~~~~~ the mongo data result is below ~~~~~~~");
+        // console.log(data_result);
+        if (data_result) {
+          _this.biggerCallback("{ status: 200}");
+        }
+        return;
+      });
     });
   }
 
@@ -68,7 +74,7 @@ exports.launch = function (jsonStr, collection, otherFn) {
   phantom.create(function(ph) {
     return ph.createPage(function(page) {
       return page.open(buildUrl(), function(status) {
-        console.log("opened site? ", status);
+        // console.log("opened site? ", status);
               page.injectJs('http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js', function() {
                   setTimeout(function() {
                       return page.evaluate(function() {
@@ -80,10 +86,8 @@ exports.launch = function (jsonStr, collection, otherFn) {
                           });
                           return stack;
                       }, function(result) {
-                          console.log(result);
-                          runIt(function () {
-                            return passBackStack(result);
-                          });
+                          // console.log(result);
+                          runIt(result);
                           ph.exit();
                       });
                   }, 5000);
@@ -93,7 +97,7 @@ exports.launch = function (jsonStr, collection, otherFn) {
       });
   });
 
-  console.log(phantom.state);
-  console.log(stack);
+  // console.log(phantom.state);
+  // console.log(stack);
 }
 
