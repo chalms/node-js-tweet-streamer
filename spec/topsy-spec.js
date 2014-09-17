@@ -5,7 +5,7 @@ describe('Topsy', function () {
   it ('it should return the correct stack', function () {
     // http://topsy.com/s?q=John%20OR%20Sandy&mintime=1388541601&maxtime=1393639201
     json = {
-      "q":"John OR Sandy",
+      "q":"AAPLE",
       "since":"2014-01-01",
       "until":"2014-03-01"
     }

@@ -2,6 +2,7 @@ QueryBuilder = require('./query_builder.js');
 TwitterStreamer = require('./twitter_streamer.js');
 Record = require('./util/record.js');
 Topsy = require('./topsy.js');
+UserData = require('./user_data.js');
 
 exports.issueQuery = function (args, fn) {
   // console.log("Query Issued: ");
@@ -10,6 +11,8 @@ exports.issueQuery = function (args, fn) {
   if (!collectionName) return "no collection name given";
   if (args["topsy"] !== undefined || args["topsy"] !== null) {
     Topsy.launch(args["topsy"], collectionName, fn);
+  } else if (args["user"] !== undefined || args["user"] !== null) {
+    UserData.show(args["user"], collectionName, fn);
   } else {
     var twitter = new TwitterStreamer(collectionName);
     var queryBuilder = new QueryBuilder();

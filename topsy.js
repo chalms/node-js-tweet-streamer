@@ -35,7 +35,7 @@ exports.launch = function (jsonStr, collection, otherFn) {
   }
 
   function passBackStack(data, fn) {
-    // console.log("passBackStack called");
+     console.log("passBackStack called");
     var jsonStack = [];
     while(data.length > 0) {
       var str = "https://api.twitter.com/1/statuses/oembed.json?id=";
@@ -43,9 +43,9 @@ exports.launch = function (jsonStr, collection, otherFn) {
       var newUrl = str + idString;
       request(newUrl, function (error, response, html) {
         if (!error && response.statusCode == 200) {
-          // console.log(html);
+           console.log(html);
           var theJSON = JSON.parse(html);
-          // console.log(theJSON);
+           console.log(theJSON);
           jsonStack.push(theJSON);
         }
       });
@@ -54,14 +54,14 @@ exports.launch = function (jsonStr, collection, otherFn) {
   }
 
   function runIt(stack) {
-    // console.log("Inside Runit()");
-    // console.log(stack);
+     console.log("Inside Runit()");
+     console.log(stack);
     passBackStack(stack, function (passedStack) {
-      // console.log("Load to mongo callback with: ");
-      // console.log(passedStack);
+      console.log("Load to mongo callback with: ");
+      console.log(passedStack);
       mongoClient(passedStack, _this.collection, function (data_result) {
-        // console.log("~~~~~~~~~~~ the mongo data result is below ~~~~~~~");
-        // console.log(data_result);
+         console.log("~~~~~~~~~~~ the mongo data result is below ~~~~~~~");
+        console.log(data_result);
         if (data_result) {
           _this.biggerCallback("{ status: 200}");
         }

@@ -6,27 +6,27 @@ module.exports = function(data, collectionName, fn) {
 	  if(err) {
 	  	console.log(err);
 	  }
-	  // console.log(collectionName);
+	  console.log(collectionName);
 	  var collection;
 
 	  try {
 	 // 	console.log("trying to get collection");
 	   collection = db.collection(collectionName);
-	 //  console.log("trying to count collection");
+	//   console.log("trying to count collection");
 	   collection.count();
 	  } catch (err) {
-	 // 	console.log("error getting collection");
+	 	console.log("error getting collection");
 	  	db.createCollection(collectionName)
-	 // 	console.log("trying to get collection again")
+//	 	console.log("trying to get collection again")
 	  	collection = db.collection(collectionName);
 	  }
-	  // console.log("~~~~~ test counting the number of items in the collection ~~~~~");
-	  // console.log(collection.count());
-	 // console.log("maybe got the collection?");
-	 // console.log(collection);
-	 // console.log("the above is the collection");
-	  // console.log("~~~~~~below is the data to insert~~~~~~~");
-	 	// console.log(data);
+	  console.log("~~~~~ test counting the number of items in the collection ~~~~~");
+	 // console.log(collection.count());
+	 console.log("maybe got the collection?");
+	// console.log(collection);
+	 console.log("the above is the collection");
+	  console.log("~~~~~~below is the data to insert~~~~~~~");
+	// 	console.log(data);
 	  collection.insert(data, {w:1}, function(err, result) {
 	  	if (!err) {
 	  		fn(result);

@@ -24,14 +24,37 @@ describe('QueryIssuer', function () {
 });
 
 describe('QueryIssuer', function () {
-  it ('it should run historical queries using the webscraper', function () {
+  xit ('it should run historical queries using the webscraper', function () {
      json = {
       "topsy" : {
-      "q":"John OR Sandy",
-      "since":"2014-01-01",
+      "q":"AAPL",
+      "count":"10",
+      "since":"2013-06-01",
       "until":"2014-03-01"
       },
-      "collection":"GWPH-tweets"
+
+      "collection":"chalmee"
+    }
+    var myVal;
+    var kanye = QueryIssuer.issueQuery(json, function (result){
+      console.log("issueQuery called!");
+      myVal = result;
+      console.log(result);
+      return result;
+    })
+    expect(kanye).toBe("200");
+    expect(myVal).toBe("200");
+  });
+});
+
+describe('QueryIssuer', function () {
+  it ('it should run historical queries using the webscraper', function () {
+     json = {
+      "user" : {
+        "screen_name": "offportal"
+      },
+
+      "collection":"forks"
     }
     var myVal;
     var kanye = QueryIssuer.issueQuery(json, function (result){
