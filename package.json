@@ -21,7 +21,8 @@
     "cheerio":"0.17.0",
     "request":"2.42.0",
     "mongoose":"3.8.12",
-    "jasmine-node":"1.14.5"
+    "jasmine-node":"1.14.5",
+    "crypto":"0.0.3"
   },
   "bundleDependencies": [
     "package/package.json",

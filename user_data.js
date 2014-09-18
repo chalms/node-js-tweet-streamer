@@ -13,12 +13,12 @@ exports.show = function (jsonStr, collection, otherFn) {
     console.log("Tweet return data");
     console.log(data);
     mongoClient(data, _this.collection, function (data_result) {
-        console.log("the mongo data result is below ");
-        console.log(data_result);
-        if (data_result) {
-          _this.biggerCallback("{ status: 200}");
-        }
-        return;
-      });
+      console.log("the mongo data result is below ");
+      console.log(data_result);
+      if (data_result) {
+        _this.biggerCallback("{ status: 200}");
+      }
+      return;
+    });
   });
 }

@@ -196,11 +196,13 @@ dbConnect(dbCollection, host, mongo)
 # query parameter (you can choose to modify these in the loop above after each iteration)
 initialParameters <- list(
   collection = dbCollection,
-  user = list(
-    screen_name = "offportal"
+  topsy = list(
+    q = query,
+    since = "2013-06-01",
+    until = "2014-01-01"
   )
 )
-
+dbConnect(dbCollection, host, mongo)
 # We start the program by requesting 5 pages (so 500) tweets with the query string "GWPH OR GW Pharmaceuticals"
 df <- getPages(1, 5, TRUE, initialParameters, dbCollection)
 

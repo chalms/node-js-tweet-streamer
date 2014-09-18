@@ -3,14 +3,27 @@ TwitterStreamer = require('./twitter_streamer.js');
 Record = require('./util/record.js');
 Topsy = require('./topsy.js');
 UserData = require('./user_data.js');
+mongoClient = require('./util/mongo_client.js');
 
-exports.issueQuery = function (args, fn) {
-  // console.log("Query Issued: ");
-  // console.log(args);
+exports.issueQuery = function (args, options, earlyRoute, constructRoute, fn) {
+  console.log("Query Issued: ");
+  console.log(args);
   var collectionName = args["collection"];
   if (!collectionName) return "no collection name given";
-  if (args["topsy"] !== undefined && args["topsy"] !== null) {
-      Topsy.launch(args["topsy"], collectionName, fn);
+  if (args.hasOwnProperty("topsy")) {
+    console.log("args has topsy")
+    if (options.hasOwnProperty("version")) {
+      console.log("opts has version -> launching topsy");
+      try {
+        mongoClient.getEarlyRoute(collectionName, earlyRoute, fn, function (token) {
+          Topsy.launch(args["topsy"], true, collectionName, token, constructRoute, fn);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      Topsy.launch(args["topsy"], false, collectionName, earlyRoute, constructRoute, fn);
+    }
   } else if (args["user"] !== undefined && args["user"] !== null) {
       UserData.show(args["user"], collectionName, fn);
   } else {
@@ -19,11 +32,8 @@ exports.issueQuery = function (args, fn) {
     var searchParams = queryBuilder.buildSearch(args["search"]);
     if (searchParams) {
       var result = "";
-      // console.log("~~~~~~searching for params below~~~~~~");
-      // console.log(searchParams);
+      console.log("launching search");
       var k = twitter.search(searchParams, function (r) {
-        // console.log("~~~~~~~~~~~~search result is below~~~~~~~~");
-        // console.log(r);
         result = r;
         fn(JSON.stringify(result));
         return;

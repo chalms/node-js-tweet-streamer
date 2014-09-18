@@ -2,14 +2,17 @@ var request = require('request');
 var phantom = require('phantom');
 var formatter = require('./util/formatter.js');
 var cheerio = require('cheerio');
+var mongoClient = require('./util/mongo_client.js');
 
-
-exports.launch = function (jsonStr, collection, otherFn) {
+exports.launch = function (jsonStr, options, collection, token, constructRoute, fn) {
+  console.log("topsy launched");
   _this = this;
   _this.collection = collection;
-  _this.biggerCallback = otherFn;
+  _this.constructRoute = constructRoute;
+  _this.fn = fn;
 
   function buildUrl() {
+    console.log("buildURl Called");
     var query = jsonStr["q"];
      query = encodeURIComponent(query.trim());
      var offset = "";
@@ -59,14 +62,11 @@ exports.launch = function (jsonStr, collection, otherFn) {
     passBackStack(stack, function (passedStack) {
       console.log("Load to mongo callback with: ");
       console.log(passedStack);
-      mongoClient(passedStack, _this.collection, function (data_result) {
-         console.log("~~~~~~~~~~~ the mongo data result is below ~~~~~~~");
-        console.log(data_result);
-        if (data_result) {
-          _this.biggerCallback("{ status: 200}");
-        }
-        return;
-      });
+      if (options) {
+        mongoClient.buildRoute(passedStack, _this.collection, token, _this.constructRoute, _this.fn);
+      } else {
+        mongoClient.getData(passedStack, _this.collection, _this.fn);
+      }
     });
   }
 
@@ -74,7 +74,7 @@ exports.launch = function (jsonStr, collection, otherFn) {
   phantom.create(function(ph) {
     return ph.createPage(function(page) {
       return page.open(buildUrl(), function(status) {
-        // console.log("opened site? ", status);
+         console.log("opened site? ", status);
               page.injectJs('http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js', function() {
                   setTimeout(function() {
                       return page.evaluate(function() {
@@ -86,7 +86,7 @@ exports.launch = function (jsonStr, collection, otherFn) {
                           });
                           return stack;
                       }, function(result) {
-                          // console.log(result);
+                          console.log(result);
                           runIt(result);
                           ph.exit();
                       });
