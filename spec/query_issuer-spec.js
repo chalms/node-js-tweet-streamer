@@ -24,19 +24,17 @@ describe('QueryIssuer', function () {
 });
 
 describe('QueryIssuer', function () {
-  xit ('it should run historical queries using the webscraper', function () {
+  it ('it should run historical queries using the webscraper', function () {
      json = {
-      "topsy" : {
+      "search" : {
       "q":"AAPL",
-      "count":"10",
       "since":"2013-06-01",
       "until":"2014-03-01"
       },
-
-      "collection":"chalmee"
+      "collection":"country"
     }
     var myVal;
-    var kanye = QueryIssuer.issueQuery(json, function (result){
+    var kanye = QueryIssuer.issueQuery(json, {}, function () {}, function () {}, function (result){
       console.log("issueQuery called!");
       myVal = result;
       console.log(result);
@@ -48,7 +46,7 @@ describe('QueryIssuer', function () {
 });
 
 describe('QueryIssuer', function () {
-  it ('it should run historical queries using the webscraper', function () {
+  xit ('it should run historical queries using the webscraper', function () {
      json = {
       "user" : {
         "screen_name": "offportal"

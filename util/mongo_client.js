@@ -76,7 +76,6 @@ exports.getData = function(data, collectionName, fn) {
 	 // console.log("trying to get collection");
 	  	collection = db.collection(collectionName);
 	  	console.log(collection);
-	   	collection.count();
 	  } catch (err) {
 	 		console.log("error getting collection");
 	  	db.createCollection(collectionName)
@@ -84,9 +83,10 @@ exports.getData = function(data, collectionName, fn) {
 	  	collection = db.collection(collectionName);
 	  }
 	  	console.log("~~~~~ test counting the number of items in the collection ~~~~~");
-	// 	console.log(data);
-	  collection.insert(data, function(err, result) {
+		console.log(collection);
+	  collection.insert(data, {w: 1}, function(err, result) {
 	  	if (!err) {
+	  		console.log("no error found");
 	  		fn(result);
 	  		return result;
 	  	} else {

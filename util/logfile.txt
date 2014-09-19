@@ -1,0 +1,98 @@
+TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:54:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1160:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1893:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:448:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/util/mongo_client.js:90:6
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/core.js:249:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/core.js:631:7
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:448:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:54:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1160:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1893:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:448:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/util/mongo_client.js:90:6
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/core.js:249:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/core.js:631:7
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:448:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:54:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1160:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1893:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:448:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/util/mongo_client.js:90:6
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/core.js:249:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/core.js:631:7
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:448:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:54:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1160:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1893:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:448:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:54:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1160:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1893:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:448:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)TypeError: Property 'mongoClient' of object #<Object> is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/twitter_streamer.js:41:5
+    at responseHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/lib/oarequest.js:375:12)
+    at passBackControl (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/node_modules/oauth/lib/oauth.js:367:11)
+    at IncomingMessage.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/twit/node_modules/oauth/lib/oauth.js:386:9)
+    at IncomingMessage.EventEmitter.emit (events.js:117:20)
+    at _stream_readable.js:919:16
+    at process._tickCallback (node.js:419:13)TypeError: undefined is not a function
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/collection/commands.js:54:5
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1160:7
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/db.js:1893:9
+    at Server.Base._callHandler (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/base.js:448:41)
+    at /Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:478:18
+    at MongoReply.parseBody (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/responses/mongo_reply.js:68:5)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/server.js:436:20)
+    at EventEmitter.emit (events.js:95:17)
+    at null.<anonymous> (/Users/jaclynfoss/Desktop/Twitter Node/node_modules/mongodb/lib/mongodb/connection/connection_pool.js:201:13)
+    at EventEmitter.emit (events.js:98:17)

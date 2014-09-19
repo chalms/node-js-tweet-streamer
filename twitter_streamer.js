@@ -38,7 +38,7 @@ TwitterStreamer.prototype.search = function(args, fn) {
     //  console.log("that was the data");
     }
     console.log("~~~~~~~~ calling mongo client with data and _this.collection ~~~~~~~~")
-    mongoClient(data, _this.collection, function (data_result) {
+    mongoClient.getData(data, _this.collection, function (data_result) {
       console.log("~~~~~~~~~~~ the mongo data result is below ~~~~~~~");
       console.log(data_result);
       if (data_result) {

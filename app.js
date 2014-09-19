@@ -10,6 +10,14 @@ var http = require('http');
 var bodyParser = require('body-parser');
 var port = process.env.PORT || 3000;
 var server = http.createServer(app);
+var timeout = express.timeout
+
+app.use(timeout(60000));
+app.use(haltOnTimedout);
+
+function haltOnTimedout(req, res, next){
+  if (!req.timedout) next();
+}
 
 server.listen(port);
 app.set('views', __dirname + '/views');
@@ -65,32 +73,29 @@ function constructRoute(route, result) {
   });
 }
 
-function queryFunct(args, callback) {
-  console.log("in query funct")
-  try {
-    var opts = {};
-    if (args.hasOwnProperty("version")) {
-      opts["version"] = args["version"];
-      delete args["version"];
-    };
-    console.log("issuing query");
-    console.log(args) ;
-    console.log(opts);
-    console.log(earlyRoute);
-    console.log(constructRoute);
-    console.log(callback);
-    QueryIssuer.issueQuery(args, opts, earlyRoute, constructRoute, callback);
-  } catch (err) {
-    callback({'error': err.toString()})
+var functions = {
+  query: function (args, callback) {
+    console.log("in query funct")
+    try {
+      var opts = {};
+      if (args.hasOwnProperty("version")) {
+        opts["version"] = args["version"];
+        delete args["version"];
+      };
+      console.log("issuing query");
+      console.log(args) ;
+      console.log(opts);
+      console.log(earlyRoute);
+      console.log(constructRoute);
+      console.log(callback);
+      QueryIssuer.issueQuery(args, opts, earlyRoute, constructRoute, callback);
+    } catch (err) {
+      callback({'error': err.toString()})
+    }
   }
 }
 
-var functions = {
-  query: queryFunct
-}
-
 app.post('/data.json', function (req, res) {
-  // console.log(req);
   var args = req.body;
   console.log("BELOW IS REQ.BODY");
   console.log(args);
@@ -110,8 +115,7 @@ app.post('/data.json', function (req, res) {
 app.post('/query.json', function(req, res) {
   var json_data = req.body;
   inspect(json_data);
-  var opts = {};
-  QueryIssuer.issueQuery(json_data, opts, earlyRoute, constructRoute, function(arg) {
+  QueryIssuer.issueQuery(json_data, {}, function () {},   function () {}, function(arg) {
     res.write(arg);
     res.end();
   });

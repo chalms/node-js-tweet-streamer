@@ -6,8 +6,6 @@ UserData = require('./user_data.js');
 mongoClient = require('./util/mongo_client.js');
 
 exports.issueQuery = function (args, options, earlyRoute, constructRoute, fn) {
-  console.log("Query Issued: ");
-  console.log(args);
   var collectionName = args["collection"];
   if (!collectionName) return "no collection name given";
   if (args.hasOwnProperty("topsy")) {
@@ -24,7 +22,7 @@ exports.issueQuery = function (args, options, earlyRoute, constructRoute, fn) {
     } else {
       Topsy.launch(args["topsy"], false, collectionName, earlyRoute, constructRoute, fn);
     }
-  } else if (args["user"] !== undefined && args["user"] !== null) {
+  } else if (args.hasOwnProperty("user")) {
       UserData.show(args["user"], collectionName, fn);
   } else {
     var twitter = new TwitterStreamer(collectionName);
@@ -38,8 +36,6 @@ exports.issueQuery = function (args, options, earlyRoute, constructRoute, fn) {
         fn(JSON.stringify(result));
         return;
       });
-    } else {
-      // console.log("No search parameters!")
     }
   }
 }
