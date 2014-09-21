@@ -33,9 +33,6 @@ TwitterStreamer.prototype.search = function(args, fn) {
     } else {
       console.log("~~~~~~~ no error found, data below ~~~~~~~~");
       console.log(data);
-    // "returned data from search/tweets")
-   //    Record.write(data);
-    //  console.log("that was the data");
     }
     console.log("~~~~~~~~ calling mongo client with data and _this.collection ~~~~~~~~")
     mongoClient.getData(data, _this.collection, function (data_result) {

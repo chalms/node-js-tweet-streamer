@@ -87,7 +87,7 @@ exports.getData = function(data, collectionName, fn) {
 	  collection.insert(data, {w: 1}, function(err, result) {
 	  	if (!err) {
 	  		console.log("no error found");
-	  		fn(result);
+	  		fn(JSON.stringify(result));
 	  		return result;
 	  	} else {
 	  		console.log("~~~~~~ insertion error below~~~~~")
