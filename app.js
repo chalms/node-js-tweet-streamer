@@ -45,7 +45,7 @@ app.post('/query.json', function (req, res) {
     if (typeof response === 'object') {
       if (response.hasOwnProperty("data")) {
         MongoClient.insertToDatabase(response["data"], args["collection"], function (messageToClient) {
-          res.write(messageToClient); 
+          res.write(JSON.stringify(messageToClient)); 
           res.end(); 
         }); 
       } else if (response.hasOwnProperty("error")) {
@@ -55,13 +55,9 @@ app.post('/query.json', function (req, res) {
       } else if (response.hasOwnProperty("status")) {
         res.write(JSON.stringify({ "status": response["status"] })); 
         res.end(); 
-      } else {
-        console.log("Response did not have the right keys: "); 
-        console.log(response); 
-      }
-    } else {
-      console.log("Response was not an object: "); 
-      console.log(response); 
+      } else { log.responseHadWrongKeys(response);  }
+    } else { 
+      log.responseNotObject(response); 
     }
   }); 
 });

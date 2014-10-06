@@ -1,6 +1,5 @@
 fs = require('fs');
 
-
 Record = function () {
   this.path = './util/tweetfile.txt';
   this.l = fs.createWriteStream(this.path, { 'flags': 'a' });

@@ -22,16 +22,17 @@ exports.issueQuery = function (args, dataHandler) {
 
     }, 
     search: function (data) {
+      
       var twitter = new TwitterStreamer(collectionName);   
       var queryBuilder = new QueryBuilder();
       queryBuilder.buildSearch(data, function (searchParams) {
         twitter.search(searchParams, function (result) {
-          dataHandler(JSON.stringify(result));
+          dataHandler(result);
         });
       }); 
     }
   };   
-  
+
   // search through all keys for the functions we want to run 
   // and there are no functions, try to run a standard search
 
@@ -45,6 +46,7 @@ exports.issueQuery = function (args, dataHandler) {
       });  
     } 
   }, function(err, results) {
+    console.log("No search param entered!"); 
     if (flag && args.hasOwnProperty("q")) functions["search"](args["q"]);
   });  
 }

@@ -6,6 +6,7 @@ Record = require('./util/record.js');
 
 var Transform = require('stream').Transform;
 var parser = new Transform({ encoding: 'utf8'});
+var _this; 
 
 process.on('uncaughtException', function (err) {
   console.log('Caught exception: ' + err.stack);
@@ -16,6 +17,8 @@ TwitterStreamer = function(collectionName) {
   log.twitStreamCreated(collectionName); 
 	this.T = new Twit(config);
   this.collection = collectionName;
+  _this = this; 
+  
 }
 
 TwitterStreamer.prototype.returnStatus = function (data, callback) {
@@ -27,18 +30,18 @@ TwitterStreamer.prototype.returnStatus = function (data, callback) {
 }
 
 TwitterStreamer.prototype.search = function(args, searchCallback) {
+  console.log(args); 
   log.searchArgs(args); 
-  _this = this;
-  _this.T.get('search/tweets', args, function(err, data, response) {
-    if (err) {
-      log.twitSearchError(err); 
-    } else {
-      log.twitSearchSuccess(data); 
-      mongoClient.getData(data, _this.collection, function (data_result) {
-        log.twitDataSaved(data_result); 
-        _this.returnStatus(data_result, searchCallback); 
-      });
-    }
+  mongoClient.getMinAndMaxValues(_this.collection, function (min, max) {
+     args["max_id"] = min; 
+      _this.T.get('search/tweets', args, function(err, data, response) {
+      if (err) {
+        log.twitSearchError(err); 
+      } else {
+        log.twitSearchSuccess(data); 
+        searchCallback({ "data": data["statuses"]}); 
+      }
+    });
   });
 }
 

@@ -1,5 +1,5 @@
 fs = require('fs');
-
+var util = require('util');
 
 Log = function () {
   this.path = './util/logfile.txt';
@@ -31,7 +31,7 @@ Log.prototype.passbackStackData = function (passedStack) {
     console.log(passedStack);
 };
 
-Log.prototype.twitSearchError = function (err) 
+Log.prototype.twitSearchError = function (err) {
     console.log("~~~~~~ search returned error, as seen below~~~~~~~~");
     console.log(err);
 };
@@ -47,7 +47,7 @@ Log.prototype.twitStreamCreated = function (collectionName) {
 };
 
 Log.prototype.twitDataSaved = function (data_result) {
-  consoke.log("Twit data saved executed"); 
+  console.log("Twit data saved executed"); 
   console.log("The mongo data result: " + data_result);
 };
 
@@ -76,6 +76,17 @@ Log.prototype.callbackOnSoloInsertion = function (d, fn) {
   console.log("Using this data: "); 
   console.log(d); 
 };
+
+Log.prototype.responseHadWrongKeys = function (response) {
+  console.log("Response did not have the right keys: "); 
+  console.log(response);
+}; 
+
+Log.prototype.responseNotObject = function (response) {
+  console.log("Response was not an object: "); 
+  console.log(response); 
+}; 
+
 
 Log.prototype.searchArgs = function(args) {
   console.log("\n --- Search args --- ");

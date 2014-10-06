@@ -10,7 +10,6 @@ exports.launch = function (jsonStr,  collection, fn) {
   console.log("topsy launched");
   _this = this;
   _this.collection = collection;
-  _this.constructRoute = constructRoute;
   _this.fn = fn;
 
   function buildUrl() {

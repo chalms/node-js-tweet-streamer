@@ -1,9 +1,6 @@
 formatter = require('./util/formatter.js');
 util = require('util');
-
-function inspect(myObject) {
-	console.log(util.inspect(myObject, {showHidden: false, depth: null}));
-}
+log = require('./util/log.js'); 
 
 QueryBuilder = function () {
 	this.query = "";
@@ -112,7 +109,7 @@ QueryBuilder = function () {
 
 	this.buildSearch = function (hash, callback) {
 		if (!hash["q"]) {
-      inspect(hash);
+      console.log(hash);
       console.log("not a search") ; 
       return; 
     }
@@ -136,12 +133,11 @@ QueryBuilder = function () {
 			console.log(dateArgsString);
 		}
 
-
 		if (!_this.query) return;
 		_this.searchArgs["q"] = _this.query;
 
     console.log(_this.query); 
-		callback(_this.searchArgs["q"]); 
+		callback(_this.searchArgs); 
 	}
 
 	this.buildStream = function (hash) {
@@ -160,8 +156,6 @@ QueryBuilder = function () {
 			return "no words to track!";
 		}
 	}
-
-	console.log("Query builder built");
 }
 
 module.exports = QueryBuilder;
