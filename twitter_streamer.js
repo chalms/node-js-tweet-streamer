@@ -18,7 +18,7 @@ TwitterStreamer = function(collectionName) {
 	this.T = new Twit(config);
   this.collection = collectionName;
   _this = this; 
-  
+
 }
 
 TwitterStreamer.prototype.returnStatus = function (data, callback) {
@@ -32,6 +32,7 @@ TwitterStreamer.prototype.returnStatus = function (data, callback) {
 TwitterStreamer.prototype.search = function(args, searchCallback) {
   console.log(args); 
   log.searchArgs(args); 
+
   mongoClient.getMinAndMaxValues(_this.collection, function (min, max) {
      args["max_id"] = min; 
       _this.T.get('search/tweets', args, function(err, data, response) {
