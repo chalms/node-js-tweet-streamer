@@ -97,13 +97,11 @@ var functions = {
 
 app.post('/data.json', function (req, res) {
   var args = req.body;
-  console.log("BELOW IS REQ.BODY");
   console.log(args);
   for (var key in args) {
     console.log(key);
     console.log(functions[key]);
     functions[key](args[key], function(arg) {
-      console.log("writing arg -> ");
       var nextJson = { "status" : 200, "route" : arg};
       console.log(nextJson);
       res.write(JSON.stringify(nextJson));
@@ -121,7 +119,4 @@ app.post('/query.json', function(req, res) {
   });
 });
 
-
-
-
-
+db.ensureIndex()

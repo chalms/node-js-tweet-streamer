@@ -3,6 +3,8 @@ var phantom = require('phantom');
 var formatter = require('./util/formatter.js');
 var cheerio = require('cheerio');
 var mongoClient = require('./util/mongo_client.js');
+var finish = require("finish");
+
 
 exports.launch = function (jsonStr, options, collection, token, constructRoute, fn) {
   console.log("topsy launched");
@@ -40,20 +42,25 @@ exports.launch = function (jsonStr, options, collection, token, constructRoute, 
   function passBackStack(data, fn) {
      console.log("passBackStack called");
     var jsonStack = [];
-    while(data.length > 0) {
-      var str = "https://api.twitter.com/1/statuses/oembed.json?id=";
-      var idString = data.pop().split("/status/")[1];
-      var newUrl = str + idString;
-      request(newUrl, function (error, response, html) {
-        if (!error && response.statusCode == 200) {
-           console.log(html);
-          var theJSON = JSON.parse(html);
-           console.log(theJSON);
-          jsonStack.push(theJSON);
-        }
-      });
-    }
-    fn(jsonStack);
+    finish(function(async) { 
+      while(data.length > 0) {
+        async(function(done) { 
+          var str = "https://api.twitter.com/1/statuses/oembed.json?id=";
+          var idString = data.pop().split("/status/")[1];
+          var newUrl = str + idString;
+          request(newUrl, function (error, response, html) {
+            if (!error && response.statusCode == 200) {
+               console.log(html);
+              var theJSON = JSON.parse(html);
+               console.log(theJSON);
+              jsonStack.push(theJSON);
+            }
+          });
+        });
+      }
+    }, function(err, results) {
+      fn(jsonStack);
+    });   
   }
 
   function runIt(stack) {
@@ -86,7 +93,7 @@ exports.launch = function (jsonStr, options, collection, token, constructRoute, 
                           });
                           return stack;
                       }, function(result) {
-                          console.log(result);
+                          console.log("phantom create -> runIt(result)");
                           runIt(result);
                           ph.exit();
                       });

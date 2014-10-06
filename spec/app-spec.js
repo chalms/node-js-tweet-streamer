@@ -13,7 +13,7 @@ describe('app', function () {
           "since":"2012-10-10",
           "until":"2014-01-01"
         },
-        "collection":"bowls"
+        "collection":"GWPH_historical"
       }
     };
     request.post('http://localhost:3000/data.json', function(error, response, body){

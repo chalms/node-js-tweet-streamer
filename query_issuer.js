@@ -9,9 +9,7 @@ exports.issueQuery = function (args, options, earlyRoute, constructRoute, fn) {
   var collectionName = args["collection"];
   if (!collectionName) return "no collection name given";
   if (args.hasOwnProperty("topsy")) {
-    console.log("args has topsy")
     if (options.hasOwnProperty("version")) {
-      console.log("opts has version -> launching topsy");
       try {
         mongoClient.getEarlyRoute(collectionName, earlyRoute, fn, function (token) {
           Topsy.launch(args["topsy"], true, collectionName, token, constructRoute, fn);
@@ -30,7 +28,6 @@ exports.issueQuery = function (args, options, earlyRoute, constructRoute, fn) {
     var searchParams = queryBuilder.buildSearch(args["search"]);
     if (searchParams) {
       var result = "";
-      console.log("launching search");
       var k = twitter.search(searchParams, function (r) {
         result = r;
         fn(JSON.stringify(result));

@@ -123,22 +123,17 @@ getPages <- function(start, end, goBackInTime, queryParameters, dbCollection) {
       print(query)
       # connect to the server and send request for the twitter data
      response <- postForm(serverHost, .opts= list(postfields = query ,httpheader = c('Content-Type' = 'application/json', Accept = 'application/json' )))
-      # A server response of 200 means that our request was executed and uploaded to the database successfully. Test if it was successful. Exit the program if it was not.
-      # At this time we then call the function 'dbConnect' to download the frames from the new collection to the current R environment
-      if (response) {
+    if (response) {
         print(response);
         dbConnect(dbCollection, host, mongo)
       } else {
         break;
       }
- #    start <- (start + 1)
- #   if (start > end) break;
- # }
 }
 
 # DB collection named after this run of the program (so the query, because we only save unique data!)
-query <- "AAPL"
-dbCollection <- "search_results"
+query <- "GWPH"
+dbCollection <- "GWPH_historical"
 dbConnect(dbCollection, host, mongo)
 
 # query parameter (you can choose to modify these in the loop above after each iteration)
