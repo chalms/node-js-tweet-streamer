@@ -8,18 +8,18 @@ describe('app', function () {
 
     var json = {
         "query": {
-        "version":"v2",
         "topsy": {
           "q":"GWPH",
           "since":"2012-10-10",
           "until":"2014-01-01"
         },
-        "collection":"wed-chalme"
+        "collection":"bowls"
       }
     };
     request.post('http://localhost:3000/data.json', function(error, response, body){
       console.log("callback body")
       console.log(body);
     }).form(json);
+
   });
 });

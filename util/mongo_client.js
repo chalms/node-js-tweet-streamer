@@ -10,7 +10,7 @@ exports.getEarlyRoute = function (collectionName, returnEarly, fn, returnTokenCa
 
 	mong.connect(url, function(err, db) {
 		if (err) throw err;
-		var collection = db.collection("country");
+		var collection = db.collection(collectionName);
 
 		function getCount(val, callback) {
 			val.count(function (err, count) {
