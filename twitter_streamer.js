@@ -7,42 +7,38 @@ Record = require('./util/record.js');
 var Transform = require('stream').Transform;
 var parser = new Transform({ encoding: 'utf8'});
 
-function inspect(myObject) {
-  console.log(util.inspect(myObject, {showHidden: false, depth: null}));
-}
-
 process.on('uncaughtException', function (err) {
   console.log('Caught exception: ' + err.stack);
   log.write(err.stack);
 });
 
 TwitterStreamer = function(collectionName) {
-  console.log("New Twitter Streamer Created!")
+  log.twitStreamCreated(collectionName); 
 	this.T = new Twit(config);
   this.collection = collectionName;
 }
 
-TwitterStreamer.prototype.search = function(args, fn) {
-  console.log("~~~~~~~~~search args below~~~~~~~~~~~ ");
-  console.log(args);
+TwitterStreamer.prototype.returnStatus = function (data, callback) {
+  if (data) {
+    callback({ "status": 200}); 
+  } else {
+    callback({ "status": 400})
+  }
+}
+
+TwitterStreamer.prototype.search = function(args, searchCallback) {
+  log.searchArgs(args); 
   _this = this;
   _this.T.get('search/tweets', args, function(err, data, response) {
     if (err) {
-      console.log("~~~~~~ search returned error, as seen below~~~~~~~~");
-      console.log(err);
+      log.twitSearchError(err); 
     } else {
-      console.log("~~~~~~~ no error found, data below ~~~~~~~~");
-      console.log(data);
+      log.twitSearchSuccess(data); 
+      mongoClient.getData(data, _this.collection, function (data_result) {
+        log.twitDataSaved(data_result); 
+        _this.returnStatus(data_result, searchCallback); 
+      });
     }
-    console.log("~~~~~~~~ calling mongo client with data and _this.collection ~~~~~~~~")
-    mongoClient.getData(data, _this.collection, function (data_result) {
-      console.log("~~~~~~~~~~~ the mongo data result is below ~~~~~~~");
-      console.log(data_result);
-      if (data_result) {
-        fn("{ status: 200}");
-      }
-      return;
-    });
   });
 }
 

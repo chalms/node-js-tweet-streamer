@@ -110,15 +110,14 @@ QueryBuilder = function () {
 		q: addQuery
 	}
 
-	this.buildSearch = function (hash) {
-		inspect(hash);
-		if (!hash) return;
+	this.buildSearch = function (hash, callback) {
 		if (!hash["q"]) {
-			console.log("not a search")
-			return;
-		}
-
+      inspect(hash);
+      console.log("not a search") ; 
+      return; 
+    }
 		console.log("building search!");
+
 		for (var key in hash) {
 			if(hash[key]) {
 				params[key](hash[key])
@@ -126,14 +125,13 @@ QueryBuilder = function () {
 				params[key]();
 			}
 		}
-
+    
 		for (var key in this.args) {
 			_this.query = _this.query + " " + _this.queryArgs[key];
 		}
 
 		for (var key in _this.dateArgs) {
 			var dateArgsString = " " + key + ":" + _this.dateArgs[key];
-
 			_this.query = _this.query + dateArgsString;
 			console.log(dateArgsString);
 		}
@@ -141,7 +139,9 @@ QueryBuilder = function () {
 
 		if (!_this.query) return;
 		_this.searchArgs["q"] = _this.query;
-		return _this.searchArgs;
+
+    console.log(_this.query); 
+		callback(_this.searchArgs["q"]); 
 	}
 
 	this.buildStream = function (hash) {
