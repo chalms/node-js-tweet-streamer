@@ -118,5 +118,3 @@ app.post('/query.json', function(req, res) {
     res.end();
   });
 });
-
-db.ensureIndex()
