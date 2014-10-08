@@ -149,3 +149,13 @@ dbConnect(dbCollection, host, mongo)
 # We start the program by requesting 5 pages (so 500) tweets with the query string "GWPH OR GW Pharmaceuticals"
 df <- getPages(1, 5, TRUE, initialParameters, dbCollection)
 
+# Node -> Have page that displays object that has one dataAggregator object
+# dataAggregator {
+# query, collection, running.  
+# }
+#
+#
+#
+
+
+

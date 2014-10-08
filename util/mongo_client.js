@@ -25,6 +25,65 @@ exports.getMinAndMaxValues = function (collectionName, callback){
    
 }
 
+exports.setNewQuery = function (dataAggregator, collectionName, query, callback) {
+   mong.connect(url, function(err, db) {
+    var collection; 
+    if (err) {
+      throw err; 
+      return; 
+    } else {
+      try { 
+        collection = db.collection(dataAggregator); 
+      } catch (e) {
+        collection = db.createCollection(dataAggregator)
+      }
+      var bulk = collection.initializeUnorderedBulkOp();
+      bulk.find().upsert().updateOne({ $set: { 
+        "query" : query, 
+        "running" : true, 
+        "collection"  : collectionName
+        }
+      }); 
+      bulk.execute(function(err, result) {
+        if (err) {
+          throw err 
+        } else {
+          callback(result); 
+        }
+      }); 
+    }
+  });   
+}
+
+exports.updateElement = function (dataAggregator, collectionName, query, callback) {
+   mong.connect(url, function(err, db) {
+    var collection; 
+    if (err) {
+      throw err; 
+      return; 
+    } else {
+      collection = db.collection(dataAggregator); 
+      var bulk = collection.initializeUnorderedBulkOp();
+      bulk.find({
+        $and: [{
+          "query": query
+        }, {
+          "collectionName": collectionName
+        }]
+      }).upsert().updateOne({ $set: { "running" : false } }); 
+      bulk.execute(function(err, result) {
+        if (err) {
+          throw err 
+        } else {
+          callback(result); 
+        }
+      }); 
+    }
+  });   
+}
+
+
+
 exports.insertToDatabase = function(data, collectionName, clientMessage) {
   mong.connect(url, function(err, db) {
     if (err) {

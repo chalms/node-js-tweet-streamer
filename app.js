@@ -62,6 +62,46 @@ app.post('/query.json', function (req, res) {
   }); 
 });
 
+var timers = {}; 
+app.post('/current_timer.json', function (req, res) {
+  try { 
+    if ((req.body.hasOwnProperty("query")) && (req.body.hasOwnProperty("collectionName"))) {
+      MongoClient.setNewQuery('current_data_aggregator', 
+        req.body["query"], 
+        req.body["collectionName"], 
+        function (result) {
+          if (timers.hasOwnProperty('current_data_aggregator')) {
+            timers['current_data_aggregator']startJob(result["query"], result["collectionName"])
+          } else {
+            timers['current_data_aggregator'] = new Timer(); 
+            timers['current_data_aggregator']startJob(result["query"], result["collectionName"]); 
+          }
+          result["status"] = 200; 
+          req.write(JSON.stringify(result)); 
+          req.end(); 
+        }
+      );
+    } else {
+      req.write(JSON.stringify({"status":400})); 
+      req.end(); 
+    }
+  } catch (err) {
+    console.log(err); 
+    req.write(JSON.stringify({"status":400})); 
+  }
+}); 
+
+app.get('/current_timer.json', function (req, res) {
+  // TODO: 
+  // Need to get params from request and pass them into 'getCurrentFeeder'
+  // Then need to retreive docs and place them into view 
+  MongoClient.getCurrentFeeder(req.params, function (obj) {
+    // new View(obj); 
+    // res.write(View); 
+    // req.end()
+  }
+}); 
+
 
 /*
 

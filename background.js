@@ -1,113 +1,91 @@
 var request = require('request'),
 QueryIssuer = require('../query_issuer.js')
 MongoClient = require('../util/mongo_client.js');
-/*
-Timer = function (name, args, interval, limits, startValue) {
-  _this = this; 
-  _this.name = name; 
-  _this.args = args; 
-  _this.interval = interval; 
-  _this.job = function (data, callback) {
-    callback(data); 
-  }
-  _this.value = startValue; 
 
+Timer = function (interval, limits, startValue) {
+  this.blocked = false; 
+  this.args = {
+    "search": {
+      "q": ''
+    },
+    "collection":''
+  }
+  this.defaultLimits = {
+    min: 10000, 
+    max: 600000
+  }
+  this.interval = interval; 
+  this.value = startValue; 
   if (limits.hasOwnProperty("max")) {
-    _this.max = limits["max"]; 
+    this.max = limits["max"]; 
   } else {
-    _this.max = null; 
+    this.max = this.defaultLimits.max; 
   }
-
   if (limits.hasOwnProperty("min")) {
-    _this.min = limits["max"]; 
+    this.min = limits["max"]; 
   } else {
-    _this.min = null; 
+    this.min = this.defaultLimits.min; 
   }
-}
-
-Timer.prototype.timerFunction = function () {
-  var start = this.interval; 
-  _this.job(); 
-}
-
-Timer.prototype.start = function () {
-  this.timerId = setTimeout(this.timerFunction, this.interval); 
+  this.ongoingCount = 0; 
 }
 
 Timer.prototype.abort = function () {
-  clearInterval(_this.timerId); 
+  this.blocked = false; 
+  clearInterval(this.timerId);
+  MongoClient.updateElement('current_data_aggregator', this.args, this.collectionName); 
 }
 
-Timer.prototype.setJob = function (options) {
-  
-  args = { "search": { "q": 'GWPH' }, "collection":"GWPH_current"};
-
-  this.job(function (sendValue) {
-    options["calculate_value"](_this, sendValue);
-  }, function (sendValue) {
-    options["job"](_this, function (value) {
-    var interval; 
-    if (value > _this.value) interval = _this.interval / 2; 
-    else if (value < _this.value) interval = _this.interval * 2; 
-    else interval = _this.interval; 
-    if (_this.max !== null) 
-      if (interval > _this.max) interval = _this.max; 
-    if (_this.min !== null) 
-      if (interval < _this.min) interval = _this.min; 
-    _this.value = value; 
-    _this.interval = interval; 
-  }); 
+Timer.prototype.adjustInterval = function (interval){
+  if (this.blocked) {
+    this.interval = interval; 
+    clearInterval(this.timerId);
+    setTimeout(this.timerFunction, this.interval);
+  }
 }
- 
-var options = { 
-  calculateValue: (function (_this, sendValue) {
-    MongoClient.getDocumentCount(_this.args["collection"], function (c) {
-      var count = c; 
-      QueryIssuer.issueQuery(args, function (response) {
-        MongoClient.insertAndReturnMong(response["data"], _this.collectionName, 
-        function (messageToClient, callback) {
-          callback(); 
-        }, 
-        function (number) {
-          sendValue(number - count);  
-        }); 
-      }); 
-    }); 
+
+Timer.prototype.startJob = function (query, collectionName) {
+  this.blocked = true; 
+  this.args = query; 
+  this.collectionName = collectionName; 
+  this.calculateValue(this.adjustInterval);
+}
+
+Timer.prototype.setNewInterval = function (value, callback) {
+  var interval; 
+  if (value > this.value) interval = this.interval / 2; 
+  else if (value < this.value) interval = this.interval * 2; 
+  else interval = this.interval; 
+  if (this.max !== null) 
+    if (interval > this.max) interval = this.max; 
+  if (this.min !== null) 
+    if (interval < this.min) interval = this.min; 
+  this.value = value; 
+  this.interval = interval; 
+  callback(this.interval); 
+}
+
+Timer.prototype.calculateValue = function (callback) {
+  _this = this; 
+  MongoClient.getDocumentCount(this.collectionName, function (c) {
+    var count = c; 
+    QueryIssuer.issueQuery(_this.args, function (response) {
+      MongoClient.insertAndReturnMong(response["data"], _this.collectionName, 
+      function (messageToClient, cback) {
+        cback(); 
+      }, 
+      function (number) {
+        if ((number - count) === 0) {
+          this.ongoingCount += 1; 
+        } else {
+          this.ongoingCount = 0; 
+        }
+        if (this.ongoingCount > 2) {
+          this.abort(); 
+        } else {
+          this.setNewInterval(number - count, callback);   
+        }
+      });
+    });
   });
 }
 
-TimerList = function () {
-  this.timers = {}; 
-}; 
-
-TimerList.prototype.addTimer = function (timer) {
-  this.timers[timer.name] = timer; 
-}
-
-
-
-
-function issueRequest() {
-
-}
-
-functi
-
-
-function abortTimer() { // to be called when you want to stop the timer
-  clearInterval(tid);
-}
-
-args = {
-  "search": {
-    "q": 'GWPH'
-  },
-  "collection":"GWPH_current"
-}
-
-QueryIssuer.issueQuery(args, function (response) {
-  MongoClient.insertToDatabase(response["data"], "GWPH_current", function (messageToClient) {
-      console.log(messageToClient); 
-      console.log(Date.new())
-
-*/
