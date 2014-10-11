@@ -145,7 +145,7 @@ Log.prototype.aborting = function () {
   console.log("Abort Called!");
 }
 
-Log.prototype.startingBot = function (collectionName) {
+Log.prototype.startingBot = function (query, collectionName) {
   console.log("Starting data bot with query: " + query + ", collectionName: " + collectionName);
 }
 Log.prototype.queryAndCollectionName = function (query, collectionName) {
@@ -156,12 +156,12 @@ Log.prototype.queryAndCollectionName = function (query, collectionName) {
 
 Log.prototype.issueQueryCallbackData = function (data) {
   console.log("Callback data: ");
-  console.log(data);
+  // console.log(data);
 }
 
 Log.prototype.newDocumentCount = function (c) {
   console.log("new document count found to be: " + c);
-  onsole.log("issuing query with args: ");
+  console.log("issuing query with args: ");
 }
 
 Log.prototype.issueQueryResponse = function (magArgs) {

@@ -17,7 +17,7 @@ module.exports = function (interval, limits, startValue, name) {
     min: 10000,
     max: 600000
   }
-  this.interval = interval;
+  this._this.setBotInterval(interval);
   this.value = startValue;
   if (limits.hasOwnProperty("max")) {
     this.max = limits["max"];
@@ -42,7 +42,7 @@ module.exports = function (interval, limits, startValue, name) {
   }
 
   _this.startJob = function (query, collectionName) {
-    log.startingBot(collectionName);
+    log.startingBot(query, collectionName);
     _this.blocked = true;
     _this.args["search"]["q"] = query;
     _this.args["collection"] = collectionName;
@@ -51,7 +51,7 @@ module.exports = function (interval, limits, startValue, name) {
     _this.calculateValue(function (interval) {
       log.adjustingInterval(interval);
       if (this.blocked) {
-        _this.interval = interval;
+        _this.setBotInterval(interval);
         clearInterval(_this.timerId);
         setTimeout(_this.timerFunction, _this.interval);
       } else {
@@ -61,17 +61,47 @@ module.exports = function (interval, limits, startValue, name) {
     });
   }
 
+  _this.setInterval = function(value) {
+    if (value === null || value === undefined || (String typeof value)) return;
+    _this.interval = value;
+  }
+
   _this.setNewInterval = function (value, callback) {
     var interval;
-    if (value > _this.value) interval = _this.interval / 2;
-    else if (value < _this.value) interval = _this.interval * 2;
-    else interval = _this.interval;
-    if (_this.max !== null)
-      if (interval > _this.max) interval = _this.max;
-    if (_this.min !== null)
-      if (interval < _this.min) interval = _this.min;
+    console.log("THIS IS THE VALUE: ");
+    console.log(value);
+    if (value > _this.value) {
+      console.log("INTERVAL DIVIDED BY 2") ;
+      _this.setBotInterval(_this.interval / 2);
+    } else if (value < _this.value) {
+        console.log("INTERVAL TIMES 2") ;
+      _this.setBotInterval(_this.interval * 2);
+    } else {
+      console.log("NEW INTERVAL");
+      _this.setBotInterval(_this.interval);
+    }
+
+    console.log("THIS IS THE INTERVAL: ");
+    console.log(interval);
+
+    console.log("THIS IS THE OLD INTERVAL: ");
+    console.log(_this.interval);
+
+    if (_this.max !== null) {
+      if (interval > _this.max) { _this.setBotInterval(_this.max);
+      }
+    }
+    if (_this.min !== null) {
+      if (interval < _this.min) {
+        _this.setBotInterval(_this.min);
+      }
+    }
+
     _this.value = value;
-    _this.interval = interval;
+    _this._this.setBotInterval(interval);
+
+    console.log("CALLING BACK WITH: ");
+    console.log(_this.interval);
     callback(_this.interval);
   }
 
@@ -117,4 +147,8 @@ module.exports = function (interval, limits, startValue, name) {
       });
     });
   }
+
+  console.log("_THIS.INTERVAL");
+  console.log(_this.interval);
+  console.log("THIS.INTERVAL");
 }
