@@ -17,7 +17,7 @@ module.exports = function (interval, limits, startValue, name) {
     min: 10000,
     max: 600000
   }
-  this._this.setBotInterval(interval);
+  this.interval = interval;
   this.value = startValue;
   if (limits.hasOwnProperty("max")) {
     this.max = limits["max"];
