@@ -1,6 +1,157 @@
 var mong = require('mongodb').MongoClient;
 var log = require('./log.js');
 var url = "mongodb://Andrew:twitter@ds053469.mongolab.com:53469/tweets";
+var finish = require('finish');
+var request = require('request');
+
+exports.createCollection = function (db, collectionName, callback) {
+  var collection;
+  try {
+    collection = db.collection(collectionName);
+  } catch (e) {
+    log.errorGettingCollection();
+    db.createCollection(collectionName);
+    collection = db.collection(collectionName);
+  }
+  function createSparseUniqueIndex(params, coll, callback) {
+    coll.ensureIndex(params, { sparse: true, unique: true}, function (err, name) {
+      if (err) {
+        console.log("ERROR CREATING INDEX");
+      } else {
+        console.log("NEW INDEX CREATED");
+        callback(coll);
+      }
+    });
+  }
+  createSparseUniqueIndex({ "id" : 1}, collection, function (collectioN) {
+    createSparseUniqueIndex({ "url" : 1}, collectioN, function (collectiON) {
+      createSparseUniqueIndex({ "id_str" : 1}, collectiON, function (collectION) {
+        callback(collectION);
+      });
+    });
+  });
+}
+
+exports.createUserDatabase = function (db, collectionName, callback) {
+  var collection;
+  try {
+    collection = db.collection(collectionName);
+  } catch (e) {
+    log.errorGettingCollection();
+    db.createCollection(collectionName);
+    collection = db.collection(collectionName);
+  }
+  function createSparseUniqueIndex(params, coll, callback) {
+    coll.ensureIndex(params, { sparse: true, unique: true}, function (err, name) {
+      if (err) {
+        console.log("ERROR CREATING INDEX");
+      } else {
+        console.log("NEW INDEX CREATED");
+        callback(coll);
+      }
+    });
+  }
+  createSparseUniqueIndex({ "id" : 1}, collection, function (collectiON) {
+    createSparseUniqueIndex({ "id_str" : 1}, collectiON, function (collectION) {
+      callback(collectION);
+    });
+  });
+}
+
+
+exports.loadUserDataForTweetCollection = function (collectionName, callback) {
+  _this = this;
+  mong.connect(url, function(err, db) {
+    var statusCollection;
+    try {
+      statusCollection = db.collection(collectionName);
+    } catch (err) {
+      callback(err, null);
+    }
+    var items = [];
+    _this.createUserDatabase(db, 'user_info_test', function (collection) {
+      var cursor = statusCollection.find();
+      finish(function(async) {
+        cursor.nextObject(function (err, item) {
+          async(function (done) {
+            if (items.length > 20) {
+              if (item) {
+                console.log("ITEM EXISTS");
+                if (item.hasOwnProperty('user')) {
+                  console.log("ITEM HAS PROPERTY 'user'");
+                  console.log(item.user);
+                  if (item.user.hasOwnProperty('id')) {
+                    console.log("USER HAS ID");
+                    console.log(item.user.id);
+                    var url = "https://api.twitter.com/1.1/users/show.json?" + "user_id" + "=" + item.user.id;
+                    request(url, function (error, response, json) {
+                      console.log("USER LOOKUP RESPONSE -> " + response);
+                      console.log(response);
+                      var jsonObject = JSON.parse(json);
+                      items.push(jsonObject);
+                    });
+                  } else if (item.user.hasOwnProperty('id_str')) {
+                    console.log("USER HAS ID_STR");
+                    console.log(item.user.id_str);
+                    var url = "https://api.twitter.com/1.1/users/show.json?" + "user_id" + "=" + item.user.id_str;
+                    request(url, function (error, response, json) {
+                      console.log("USER LOOKUP RESPONSE -> " + response);
+                      console.log(response);
+                      var jsonObject = JSON.parse(json);
+                      items.push(jsonObject);
+                    });
+                  }
+                }
+              }
+            } else {
+              var bulk = collection.initializeUnorderedBulkOp();
+              for (var i in items) {
+                var elem = items[i];
+                bulk.find({
+                  $or: [ {
+                    "id": elem["id"]
+                  }, {
+                    "id_str": elem["id_str"]
+                  } ]
+                }).upsert().updateOne({ $set: elem });
+              }
+              bulk.execute(function(err, result) {
+                if (err) {
+                  throw err
+                } else {
+                  items = [];
+                }
+              });
+            }
+          });
+        });
+      }, function (err, data) {
+        try {
+          var bulk = collection.initializeUnorderedBulkOp();
+            for (var i in data) {
+            var elem = data[i];
+            bulk.find({
+              $or: [ {
+                "id": elem["id"]
+              }, {
+                "id_str": elem["id_str"]
+              } ]
+            }).upsert().updateOne({ $set: elem });
+          }
+          bulk.execute(function(err, result) {
+            if (err) {
+              callback(err, null);
+            } else {
+              callback(null, collection.count);
+            }
+          });
+        } catch (err) {
+          callback(err, null);
+        }
+      });
+    });
+  });
+};
 
 exports.getMinAndMaxValues = function (collectionName, args, callback){
   _this = this;
@@ -8,11 +159,8 @@ exports.getMinAndMaxValues = function (collectionName, args, callback){
   _this.callback = callback;
   log.checkingMinMaxArgs(args);
   mong.connect(url, function(err, db) {
-    if (err) {
-      throw err;
-      return;
-    } else {
-      _this.collection = db.collection(collectionName);
+    _this.createCollection(db, _this.collectionName, function (collection) {
+      _this.collection = collection;
       _this.collection.findOne({"query": args["q"]}, { "sort": [['id','desc']] }, function (err, max) {
         _this.collection.findOne({"query": args["q"]}, { "sort": [['id','asc']] }, function (err, min) {
           if (min && max) {
@@ -22,7 +170,7 @@ exports.getMinAndMaxValues = function (collectionName, args, callback){
           }
         });
       });
-    }
+    });
   });
 }
 
@@ -77,6 +225,7 @@ exports.setNewQuery = function (dataAggregator, collectionName, query, callback,
   });
 }
 
+
 exports.setRunning = function (dataAggregator, running, callback) {
   mong.connect(url, function(err, db) {
     var collection;
@@ -113,6 +262,7 @@ exports.insertToDatabase = function(data, collectionName, clientMessage) {
       clientMessage({"status":400});
       return;
     }
+
     try {
       var bulk = collection.initializeUnorderedBulkOp();
       for (var i in data) {
@@ -196,66 +346,109 @@ exports.insertAndReturnMong = function(data, collectionName, ref, callbackFuncti
   });
 }
 
-exports.getDocumentCount = function (collectionName, callback) {
+exports.getCollectionView = function (callback) {
+  var keys = ['system.indexes', 'system.users', 'objectlabs-system', 'objectlabs-system', 'admin.collections'];
+  mong.connect(url, function(err, db) {
+    db.collections(function (err, collections) {
+      if (err) {
+        callback(err, collections);
+      } else {
+        var errors = [];
+        var collectionData = {};
+        try {
+          finish(function(async) {
+            for (var i in collections) {
+              async(function (done) {
+                var collection = collections[i];
+                if (keys.indexOf(collection.collectionName) === -1) {
+                  collectionData[collection.collectionName] = {};
+                  collectionData[collection.collectionName]['name'] = collection.collectionName;
+                  collection.count(function (err, count) {
+                    if (err) {
+                      errors.push(err);
+                    } else {
+                      collectionData[collection.collectionName]['count'] = count;
+                    }
+                  });
+                  collection.indexInformation(function (err, indexes) {
+                    if (err) {
+                      errors.push(err);
+                    } else {
+                      collectionData[collection.collectionName]['indexes'] = indexes;
+                    }
+                    done();
+                  });
+                } else {
+                  done();
+                }
+              });
+            }
+          }, function (err, data) {
+            callback(errors, collectionData);
+          });
+        } catch (err) {
+          callback(err, collections);
+        }
+      }
+    });
+  });
+}
+
+exports.getDocumentCount = function (collectionName, bool, callback) {
   log.getDocumentCountStart(collectionName);
   this.callback = callback;
   this.collectionName = collectionName;
   _this = this;
   mong.connect(url, function(err, db) {
-    if(err) {
-      throw err;
+    if (bool) {
+      _this.createCollection(db, _this.collectionName, function (collection) {
+        _this.collection = collection;
+        _this.collection.count(function (err, count) {
+          _this.callback(count);
+        });
+      });
+    } else {
+      _this.collection = db.collection(collectionName);
+      _this.collection.count(function (err, count) {
+        _this.callback(count);
+      });
     }
-    try {
-      _this.collection = db.collection(_this.collectionName);
-      log.getDocumentCountWrite(_this.collectionName);
-    } catch (err) {
-      log.getDocumentCountError(_this.collectionName);
-      throw err;
-    }
-    _this.collection.count(function (err, count) {
-      _this.callback(count);
-    });
   });
 }
 
-exports.getData = function(data, collectionName, fn) {
+
+exports.getData = function(data, collectionName, callbackGetData) {
 	mong.connect(url, function(err, db) {
 	  if(err) {
 	  	throw err;
 	  }
-	  try {
-	  	collection = db.collection(collectionName);
-	  } catch (err) {
-      log.errorGettingCollection();
-	  	db.createCollection(collectionName)
-	  }
-	  collection.insert(data, {w: 1}, function(err, result) {
-	  	if (!err) {
-        var resultString = JSON.stringify(result);
-        log.callbackOnSoloInsertion(resultString, fn);
-	  		fn(resultString);
-	  	} else { log.insertionError(err)}
-	  });
+    collection = db.collection('collectionName');
+    collection.insert(data, {w: 1}, function(err, result) {
+      if (!err) {
+        var d = JSON.stringify(result);
+        log.callbackOnSoloInsertion(d, callbackGetData);
+        callbackGetData(d);
+      } else {
+        log.insertionError(err)
+      }
+    });
 	});
 }
 
-exports.getDataBot = function(data, collectionName, fn) {
+exports.getDataBot = function(data, collectionNm, callbackGetDataBot) {
   mong.connect(url, function(err, db) {
     if(err) {
       throw err;
     }
-    try {
-      collection = db.collection(collectionName);
-    } catch (err) {
-      log.errorGettingCollection();
-      db.createCollection(collectionName)
-    }
+    collection = db.collection('collectionName');
     collection.insert(data, {w: 1}, function(err, result) {
       if (!err) {
         var d = JSON.stringify(result);
-        log.callbackOnSoloInsertion(d, fn);
-        fn(d);
-      } else { log.insertionError(err)}
+        log.callbackOnSoloInsertion(d, callbackGetDataBot);
+        callbackGetDataBot(d);
+      } else {
+        log.insertionError(err)
+      }
     });
   });
 }

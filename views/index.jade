@@ -4,87 +4,159 @@ block content
   h1#twitter-feed
     a.headeranchor-link(name='user-content-twitter-feed', href='#twitter-feed', aria-hidden='true')
       span.headeranchor
-  table
-    thead Data Bots
-    tbody
-      tr
-        th Current Data
-      tr
-        td
-          script.
-            if ('#{query}' === undefined) {
-             '#{query = "GWPH"}'
+  div.form(id="user-info")
+    h3 Collect User Info
+    div.form-group
+      label From Collection:
+      input.form-control(id="collectionName", type="text", name="collectionName", value="")
+      button.btn.btn-primary(id="user_info_button") Submit
+    script.
+      $(document).ready(function () {
+        $("#user_info_button").click(function () {
+          var userData = {};
+          userData["collection"] = $("#collectionName")[0].value;
+          $.ajax({
+            url: '/user_info.json',
+            type: 'post',
+            data: userData,
+            success: function (data) {
+              var data = JSON.parse(data);
+              var html = $.parseHTML("<p> Records in User Database:  " + data.count + "</p>");
+              $('#user-info').prepend(html);
+            }, error: function (err) {
+              var html = $.parseHTML("<p> Error! " + err + "</p>");
+              $('#user-info').prepend(html);
             }
-            if ('#{collection}' === undefined) {
-              '#{collection = "GWPH_test"}'
-            }
-          div(class="form", id="current_data_bot")
-            h5 Collection
-            input(id="collection", type="text", name="collection", value="#{collection}")
-            h5 Query
-            input(id="query", type="text", name="query", value="#{query}")
-            button(id="current_data_bot_button") Submit
-          script.
-            $(document).ready(function () {
-              $("#current_data_bot_button").click(function () {
-                var form = $("#current_data_bot input");
-                $("#current_data_bot").css('background','#DD0000');
-                console.log(form);
-                var d = {};
-                d["collectionName"] = $("#collection")[0].value;
-                d["query"] = $("#query")[0].value;
-                console.log(d);
-                function timerFunction () {
-                  $.ajax({
-                    url: '/current_timer.json',
-                    type: 'get',
-                    success: function (data) {
-                      console.log("timer funciton");
-                      console.log(data);
-                      var f = JSON.parse(data);
-                      console.log(f);
-                      if (f === null) {
-                        setTimeout(timerFunction(), 10000);
-                        return;
-                      }
-                      var bool = f["running"];
-                      console.log("testing bool");
-                      console.log(bool);
-                      if (bool) {
-                        setTimeout(timerFunction(), 10000);
-                      } else {
-                        $("#current_data_bot").css('background','#FFFFFF');
-                        // done!
-                      }
-                    },
-                    error: function (err) {
-                      console.log(err);
-                      setTimeout(timerFunction(), 10000);
-                    }
-                  });
+          });
+        });
+      });
+  div.form(id="current_data_bot")
+    h3
+      lead Add Current Data
+    script.
+      if ('#{query}' === undefined) {
+       '#{query = "GWPH"}'
+      }
+      if ('#{collection}' === undefined) {
+        '#{collection = "GWPH_test"}'
+      }
+    div.form-group
+      label Collection
+      input.form-control(id="collection", type="text", name="collection", value="#{collection}")
+    div.form-group
+      label Query
+      input.form-control(id="query", type="text", name="query", value="#{query}")
+    button.btn.btn-primary(id="current_data_bot_button") Submit
+    script.
+      $(document).ready(function () {
+        $("#current_data_bot_button").click(function () {
+          var form = $("#current_data_bot input");
+          // $("#current_data_bot").css('background','#DD0000');
+          console.log(form);
+          var d = {};
+          d["collectionName"] = $("#collection")[0].value;
+          d["query"] = $("#query")[0].value;
+          console.log(d);
+          var $el = $("#current_data_bot");
+          var oldHtml = $("#current_data_bot").html();
+          $el.waiting({
+            className: 'waiting-circles',
+            elements: 8,
+            radius: 20,
+            auto: true
+          });
+          $el.waiting('play');
+          var error_count = 0;
+          function timerFunction () {
+            var timerId;
+            $.ajax({
+              url: '/current_timer.json',
+              type: 'get',
+              success: function (data) {
+                error_count = 0;
+                console.log(data);
+                var f = JSON.parse(data);
+                console.log(f);
+                if (f === null) {
+                  timerId = setTimeout(timerFunction, 500);
+                  return;
                 }
-                $.ajax({
-                  url: '/current_timer.json',
-                  type: 'post',
-                  data: d,
-                  success: function (data) {
-                    console.log(data);
-                    var g = JSON.parse(data);
-                    console.log(g);
-                    var c = g["running"];
-                    console.log(g["running"]);
-                    if (c) {
-                      $("#current_data_bot").css('background','#GGFFGG');
-                      timerFunction();
-                    } else {
-                      console.log("not running?");
-                    }
-                  },
-                  error: function (err) {
-                    console.log(data);
-                    $("#current_data_bot").css('background','#FFDDFF');
-                    timerFunction();
-                  }
-                });
-              });
+                var bool = f["running"];
+                console.log("testing bool");
+                console.log(bool);
+                if (bool) {
+                  timerId = setTimeout(timerFunction, 500);
+                } else {
+                  $el.waiting('disable');
+                  $el.waiting('destroy');
+                  $el.html(oldHtml);
+                  node = $.parseHTML('<h4> Collection: ' + d["collectionName"] + '</h4><h5> Query: ' + d["query"] +' </h5>');
+                  $el.prepend(node);
+                  clearTimeout(timerId);
+                  // done!
+                }
+              },
+              error: function (err) {
+                error_count += 1;
+                console.log(err);
+                if (error_count > 5) {
+                  clearTimeout(timerId);
+                  $el.waiting('disable');
+                  $el.waiting('destroy');
+                  $el.html(oldHtml);
+                  node = $.parseHTML('<p> An error has occured. Refresh and try again.</p>');
+                  console.log(node);
+                  $el.prepend(node);
+                } else {
+                  timerId = setTimeout(timerFunction, 500);
+                }
+              }
             });
+          }
+          $.ajax({
+            url: '/current_timer.json',
+            type: 'post',
+            data: d,
+            success: function (data) {
+              console.log(data);
+              var g = JSON.parse(data);
+              console.log(g);
+              var c = g["running"];
+              console.log(g["running"]);
+              if (c) {
+                timerFunction();
+              } else {
+                console.log("not running?");
+              }
+            },
+            error: function (err) {
+              console.log(data);
+              timerFunction();
+            }
+          });
+        });
+      });
+  table.table.table-hover(style = "margin-top: 20px;")
+    tbody
+      tr.row
+        th
+          = "Name"
+        th
+          = "Number of Documents"
+        th
+          = "Indexes"
+      - for (var i in collections)
+        tr.row
+          td
+            a.collection-link
+              = collections[i]['name']
+          td
+            = collections[i]['count']
+          td
+            - test = true
+            - for (var key in collections[i]['indexes'])
+              - if (test)
+                = collections[i]['indexes'][key][0][0]
+                - test = false
+              - else
+                = ", " + collections[i]['indexes'][key][0][0]

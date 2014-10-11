@@ -2,34 +2,37 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(type='text/javascript' src='/vendor/jquery.js')
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css")
+    script(type='text/javascript', src='/vendor/jquery.js')
+    script(type='text/javascript', src='/vendor/jquery-waiting.js')
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js")
+    link(rel="stylesheet", href='/stylesheets/style.css')
   body
-    div.container-fluid
-      div.nav(id='navbar')
-        ul
-          li.active
-            a(href = '#documentation') Documentation
-          li
-            a(href = '#twitter') Web bots
-          li
-            a(href = '#blog') Blog
-      div(id='main')
-        block content
-      script.
-        $(document).ready(function () {
-          function changeActive(e) {
-            var node = $('#nav ul li.active');
-            var parent = $(e.currentTarget).parent();
-            if (node[0] !== parent[0]) {
-              parent.addClass('active');
-              node.removeClass('active');
-            }
+    div.nav(id='navbar')
+      ul
+        li.active
+          a(href = '#documentation') Documentation
+        li
+          a(href = '#twitter') Web bots
+        li
+          a(href = '#blog') Blog
+    div.container-fluid(id='main')
+      block content
+    script.
+      $(document).ready(function () {
+        function changeActive(e) {
+          var node = $('#nav ul li.active');
+          var parent = $(e.currentTarget).parent();
+          if (node[0] !== parent[0]) {
+            parent.addClass('active');
+            node.removeClass('active');
           }
-          $('#documentation').click(function (e) {
-            changeActive(e);
-          });
-          $('#twitter').click(function (e) {
-            changeActive(e);
-          });
+        }
+        $('#documentation').click(function (e) {
+          changeActive(e);
         });
+        $('#twitter').click(function (e) {
+          changeActive(e);
+        });
+      });

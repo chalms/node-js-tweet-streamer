@@ -14,6 +14,14 @@ Log.prototype.wipe = function () {
   fs.truncate(this.path, 0);
 };
 
+Log.prototype.logCollectionView = function (errors, data) {
+  console.log("COLLECTION DATA -> " + data);
+  console.log("ERRORS -> " + errors);
+  for (var i in data) {
+    console.log(data[i]['indexes']);
+  }
+}
+
 Log.prototype.query = function (args) {
   console.log("\n---- Generating Query ----\n");
   console.log("Arguments:");

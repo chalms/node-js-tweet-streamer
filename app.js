@@ -37,7 +37,6 @@ function haltOnTimedout(req, res, next) {
   if (!req.timedout) next();
 }
 
-
 QueryIssuer = require('./query_issuer.js');
 log.wipe();
 process.on('uncaughtException', function (err) {
@@ -96,6 +95,25 @@ function launchDataAggregator(req, res, writeResponseFunct) {
   );
 }
 
+app.post('/user_info.json', function (req, res) {
+  try {
+    var collectionName = req.body["collection"];
+    MongoClient.loadUserDataForTweetCollection(collectionName, function (err, done) {
+      if (err === null) {
+        res.write(JSON.stringify({status: 200, count: done}));
+        res.end();
+      } else {
+        res.write(JSON.stringify({status: 400, error: err}));
+        res.end();
+      }
+    });
+  } catch (err) {
+    res.write(JSON.stringify({status: 400, error: err}));
+    res.end();
+    return;
+  }
+});
+
 // // main documentation (http server) --->
 app.get('/current_timer.json', function (req, res) {
   MongoClient.getElement('data_bots', 'current_data_aggregator', function (item) {
@@ -109,9 +127,7 @@ app.post('/current_timer.json', function (req, res) {
     result["status"] = 200;
     res.write(JSON.stringify(result));
     res.end();
-    launchDataAggregator(req, res, function (result) {
-
-    });
+    launchDataAggregator(req, res, function (result) {});
   });
 });
 
@@ -123,8 +139,11 @@ fs.readFile('public/markdown/documentation.markdown', "utf8", function read(err,
   }
   content = data;
   app.get('/', function(req, res) {
-    res.render('index', { title: "Data bot", markdown_text: content }, function (err, html) {
-      res.send(html);
+    MongoClient.getCollectionView(function(errors, data) {
+      log.logCollectionView(errors, data);
+      res.render('index', { title: "Data bot", collections: data, markdown_text: content }, function (err, html) {
+        res.send(html);
+      });
     });
   });
 });

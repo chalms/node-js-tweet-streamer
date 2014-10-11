@@ -40,6 +40,7 @@ module.exports = function (interval, limits, startValue, name) {
   _this.startJob = function (query, collectionName) {
     log.startingBot(query, collectionName);
     _this.blocked = true;
+    _this.firstRun = false;
     _this.args["search"]["q"] = query;
     _this.args["collection"] = collectionName;
     _this.collectionName = collectionName;
@@ -64,11 +65,17 @@ module.exports = function (interval, limits, startValue, name) {
     var queryParams = _this.args;
     var setNewIntervalFunct = _this.setNewInterval;
     var referenceThis = _this;
+    var bool = _this.firstRun;
 
-    MongoClient.getDocumentCount(_this.collectionName, function (c) {
+
+    MongoClient.getDocumentCount(_this.collectionName, bool, function (c) {
       var count = c;
       log.newDocumentCount(c);
       console.log(queryParams);
+
+      _this.firstRun = false;
+      referenceThis.firstRun = false;
+      bool = false;
 
       QueryIssuer.issueQuery(queryParams, function (response) {
         log.issueQueryResponse(queryParams);
