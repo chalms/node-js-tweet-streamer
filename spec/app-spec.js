@@ -8,7 +8,7 @@ describe('app', function () {
 
     var json = {
         "query": {
-        "topsy": {
+        "historical": {
           "q":"GWPH",
           "since":"2012-10-10",
           "until":"2014-01-01"

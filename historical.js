@@ -7,7 +7,7 @@ var finish = require("finish");
 var log = require('./util/log.js')
 
 exports.launch = function (jsonStr,  collection, fn) {
-  console.log("topsy launched");
+  console.log("historical launched");
   _this = this;
   _this.collection = collection;
   _this.fn = fn;
@@ -41,17 +41,17 @@ exports.launch = function (jsonStr,  collection, fn) {
   function passBackStack(data, fn) {
      console.log("passBackStack called");
     var jsonStack = [];
-    finish(function(async) { 
+    finish(function(async) {
       while(data.length > 0) {
-        async(function(done) { 
+        async(function(done) {
           var str = "https://api.twitter.com/1/statuses/oembed.json?id=";
           var idString = data.pop().split("/status/")[1];
           var newUrl = str + idString;
-          console.log("accessing " + newUrl); 
+          console.log("accessing " + newUrl);
           request(newUrl, function (error, response, html) {
             if (!error && response.statusCode == 200) {
               var theJSON = JSON.parse(html);
-              console.log("pushing to jsonStack"); 
+              console.log("pushing to jsonStack");
               jsonStack.push(theJSON);
             }
           });
@@ -60,7 +60,7 @@ exports.launch = function (jsonStr,  collection, fn) {
     }, function(err, results) {
       console.log("finished, calling jsonStack")
       fn({ "data": jsonStack });
-    });   
+    });
   }
 
   function runIt(stack) {
@@ -73,7 +73,7 @@ exports.launch = function (jsonStr,  collection, fn) {
   phantom.create(function(ph) {
     return ph.createPage(function(page) {
       return page.open(buildUrl(), function(status) {
-        log.openSite(status); 
+        log.openSite(status);
         page.injectJs('http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js', function() {
           setTimeout(function() {
             return page.evaluate(function() {

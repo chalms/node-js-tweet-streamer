@@ -139,7 +139,7 @@ dbConnect(dbCollection, host, mongo)
 # query parameter (you can choose to modify these in the loop above after each iteration)
 initialParameters <- list(
   collection = dbCollection,
-  topsy = list(
+  historical = list(
     q = query,
     since = "2013-06-01",
     until = "2014-01-01"
@@ -151,7 +151,7 @@ df <- getPages(1, 5, TRUE, initialParameters, dbCollection)
 
 # Node -> Have page that displays object that has one dataAggregator object
 # dataAggregator {
-# query, collection, running.  
+# query, collection, running.
 # }
 #
 #

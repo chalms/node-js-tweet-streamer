@@ -2,8 +2,9 @@ var fs = require('fs');
 var request = require('request');
 var QueryIssuer = require('./query_issuer.js');
 var MongoClient = require('./util/mongo_client.js');
+var log = require('./util/log.js');
 
-DataBot = function (interval, limits, startValue, name) {
+module.exports = function (interval, limits, startValue, name) {
   this.name = name;
   this.blocked = false;
   this.args = {
@@ -29,85 +30,91 @@ DataBot = function (interval, limits, startValue, name) {
     this.min = this.defaultLimits.min;
   }
   this.ongoingCount = 0;
-}
-
-DataBot.prototype.abort = function () {
-  this.blocked = false;
-  clearInterval(this.timerId);
-  console.log("Abort Called!");
-  MongoClient.updateElement('data_bots', this.args, this.name);
-}
-
-DataBot.prototype.adjustInterval = function (interval){
-  console.log("Adjusting Interval: " + interval);
-  if (this.blocked) {
-    this.interval = interval;
-    clearInterval(this.timerId);
-    setTimeout(this.timerFunction, this.interval);
-  } else {
-    console.log("Interval cannot be adjusted");
-  }
-}
-
-DataBot.prototype.startJob = function (query, collectionName) {
-  console.log("Starting data bot with query: " + query + ", collectionName: " + collectionName);
-  this.blocked = true;
-  this.args["search"]["q"] = query;
-  this.args["collection"] = collectionName;
-  console.log(this.args);
-  this.collectionName = collectionName;
-  this.calculateValue(this.adjustInterval);
-}
-
-DataBot.prototype.setNewInterval = function (value, callback) {
-  var interval;
-  if (value > this.value) interval = this.interval / 2;
-  else if (value < this.value) interval = this.interval * 2;
-  else interval = this.interval;
-  if (this.max !== null)
-    if (interval > this.max) interval = this.max;
-  if (this.min !== null)
-    if (interval < this.min) interval = this.min;
-  this.value = value;
-  this.interval = interval;
-  callback(this.interval);
-}
-
-DataBot.prototype.calculateValue = function (callback) {
   _this = this;
-  console.log("in calculate value.\n _this.collectionName: ");
-  console.log(_this.collectionName);
-  console.log(_this.args);
-  var magArgs = _this.args;
-  var setNewIntervalFunct = this.setNewInterval;
-  MongoClient.getDocumentCount(_this.collectionName, function (c) {
-    var count = c;
-    console.log("new document count found to be: " + c);
-    console.log("issuing query with args: ");
-    console.log(magArgs);
-    QueryIssuer.issueQuery(magArgs, function (response) {
-      console.log("issue query called with response: ");
-      console.log(response);
-      MongoClient.insertAndReturnMong(response["data"], _this.collectionName,
-      function (messageToClient, cback) {
-        cback();
-      },
-      function (number) {
-        console.log("variation in ongoing count calculated");
-        console.log("number calculated to be: " + number);
-        if ((number - count) === 0) {
-          _this.ongoingCount += 1;
-        } else {
-          _this.ongoingCount = 0;
+
+  _this.abort = function () {
+    log.aborting();
+    _this.blocked = false;
+    clearInterval(_this.timerId);
+    MongoClient.setRunning('current_data_aggregator', false, function (result) {
+      console.log(result);
+    });
+  }
+
+  _this.startJob = function (query, collectionName) {
+    log.startingBot(collectionName);
+    _this.blocked = true;
+    _this.args["search"]["q"] = query;
+    _this.args["collection"] = collectionName;
+    console.log(_this.args);
+    _this.collectionName = collectionName;
+    _this.calculateValue(function (interval) {
+      log.adjustingInterval(interval);
+      if (this.blocked) {
+        _this.interval = interval;
+        clearInterval(_this.timerId);
+        setTimeout(_this.timerFunction, _this.interval);
+      } else {
+        log.intervalAdjustmentFailed();
+        _this.abort();
+      }
+    });
+  }
+
+  _this.setNewInterval = function (value, callback) {
+    var interval;
+    if (value > _this.value) interval = _this.interval / 2;
+    else if (value < _this.value) interval = _this.interval * 2;
+    else interval = _this.interval;
+    if (_this.max !== null)
+      if (interval > _this.max) interval = _this.max;
+    if (_this.min !== null)
+      if (interval < _this.min) interval = _this.min;
+    _this.value = value;
+    _this.interval = interval;
+    callback(_this.interval);
+  }
+
+  _this.calculateValue = function (callback) {
+    log.queryAndCollectionName(_this.args, _this.collectionName);
+    var magArgs = _this.args;
+    var setNewIntervalFunct = _this.setNewInterval;
+    MongoClient.getDocumentCount(_this.collectionName, function (c) {
+      var count = c;
+      log.newDocumentCount(c);
+      console.log(magArgs);
+      QueryIssuer.issueQuery(magArgs, function (response) {
+        log.issueQueryResponse(magArgs);
+        function insertQuery(data, callback) {
+          if( (Object.prototype.toString.call( data ) === '[object Array]') || (data instanceof Array) ) {
+            for (var i = 0; i < data.length; i++) {
+              data[i]["query"] = magArgs["search"]["q"];
+            }
+          } else {
+            data["query"] = magArgs["search"]["q"];
+          }
+          callback(data);
         }
-        if (_this.ongoingCount > 2) {
-          _this.abort();
-        } else {
-          setNewIntervalFunct(number - count, callback);
-        }
+        insertQuery(response["data"], function (data){
+          log.issueQueryCallbackData(data);
+          MongoClient.insertAndReturnMong(data, _this.collectionName,
+          function (messageToClient, cback) {
+            cback();
+          },
+          function (number) {
+            log.writeNumberAndCount(number, count);
+            var diff = number - count;
+            if (diff === 0) {
+              _this.ongoingCount += 1;
+              if (_this.ongoingCount > 2) {
+                _this.abort();
+              }
+            } else {
+              setNewIntervalFunct(diff, callback);
+            }
+          });
+        });
       });
     });
-  });
+  }
 }
-
-module.exports = DataBot;

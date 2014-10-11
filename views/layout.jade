@@ -5,4 +5,31 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(type='text/javascript' src='/vendor/jquery.js')
   body
-    block content
+    div.container-fluid
+      div.nav(id='navbar')
+        ul
+          li.active
+            a(href = '#documentation') Documentation
+          li
+            a(href = '#twitter') Web bots
+          li
+            a(href = '#blog') Blog
+      div(id='main')
+        block content
+      script.
+        $(document).ready(function () {
+          function changeActive(e) {
+            var node = $('#nav ul li.active');
+            var parent = $(e.currentTarget).parent();
+            if (node[0] !== parent[0]) {
+              parent.addClass('active');
+              node.removeClass('active');
+            }
+          }
+          $('#documentation').click(function (e) {
+            changeActive(e);
+          });
+          $('#twitter').click(function (e) {
+            changeActive(e);
+          });
+        });

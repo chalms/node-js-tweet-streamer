@@ -1,3 +1,4 @@
+
 html {
     font-size: 100%;
     overflow-y: scroll;
@@ -17,6 +18,52 @@ body {
     outline: 1300px solid #f8f8f8;
 }
 
+/* Navbar */
+
+.nav ul {
+  list-style: none;
+  background-color: #ededed;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+.nav li {
+  font-size: 1.2em;
+  line-height: 40px;
+  height: 40px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #111;
+  display: block;
+  transition: .3s background-color;
+}
+
+.nav a:hover {
+  background-color: #fff;
+}
+
+.nav a.active {
+  background-color: #000;
+  color: #fff;
+  cursor: default;
+}
+
+.nav li {
+    float: left;
+    width: 20%;
+}
+.nav ul {
+    overflow: auto;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.nav li.active {
+    background-color: #dcdcdc;
+}
+
 /* Links */
 a {
     color: #06d;
@@ -24,7 +71,7 @@ a {
 }
 
 a:hover {
-    color: #06e;
+    color: #000;
     text-decoration: underline;
 }
 

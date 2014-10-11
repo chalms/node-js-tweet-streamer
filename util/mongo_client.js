@@ -1,37 +1,48 @@
 var mong = require('mongodb').MongoClient;
-
+var log = require('./log.js');
 var url = "mongodb://Andrew:twitter@ds053469.mongolab.com:53469/tweets";
 
-exports.getMinAndMaxValues = function (collectionName, callback){
+exports.getMinAndMaxValues = function (collectionName, args, callback){
   _this = this;
   _this.collectionName = collectionName;
   _this.callback = callback;
-   mong.connect(url, function(err, db) {
+  log.checkingMinMaxArgs(args);
+  mong.connect(url, function(err, db) {
     if (err) {
       throw err;
       return;
     } else {
       _this.collection = db.collection(collectionName);
-      var options = { "sort": [['id','desc']] };
-      _this.collection.findOne({}, options, function (err, max) {
-        options = { "sort": [['id','asc']] };
-        _this.collection.findOne({}, options, function (err, min) {
-          console.log(min.id);
-          callback(min.id, max.id);
+      _this.collection.findOne({"query": args["q"]}, { "sort": [['id','desc']] }, function (err, max) {
+        _this.collection.findOne({"query": args["q"]}, { "sort": [['id','asc']] }, function (err, min) {
+          if (min && max) {
+            callback(min.id, max.id);
+          } else {
+            callback(null, null);
+          }
         });
       });
     }
   });
 }
 
+exports.getElement = function (collection, name, callback) {
+  mong.connect(url, function(err, db) {
+    var c = db.collection(collection);
+    var cursor = c.find({ 'name' : name });
+    cursor.nextObject(function (err, item) {
+      callback(item);
+    });
+  });
+}
+
 exports.setNewQuery = function (dataAggregator, collectionName, query, callback, writeResponseFunct) {
   _this = this;
-  console.log("in set new query");
+  log.inSetNewQuery();
   mong.connect(url, function(err, db) {
-    console.log("in monfo ");
     var collection;
     if (err) {
-      console.log("error connecting to mongo");
+      log.mongoConnectingError();
       callback({"status" : 400}, writeResponseFunct);
     } else {
       try {
@@ -41,23 +52,22 @@ exports.setNewQuery = function (dataAggregator, collectionName, query, callback,
       }
       var bulk = collection.initializeUnorderedBulkOp();
       bulk.find({"name": dataAggregator }).upsert().updateOne({ $set: {
-        "name" : dataAggregator,
+        "name" : collectionName,
         "query" : query,
         "running" : true,
-        "collection"  : collectionName
+        "collection"  : dataAggregator
         }
       });
       bulk.execute(function(err, result) {
         if (err) {
           throw err
         } else {
-          console.log("bundle executed!");
+          log.bundleExecuted();
           var hash = {};
           hash["query"] = query;
           hash["name"] = dataAggregator;
           hash["collection"] = collectionName;
           console.log(hash);
-
           _this.args = query;
           _this.collectionName = collectionName;
           callback(hash, writeResponseFunct);
@@ -67,8 +77,8 @@ exports.setNewQuery = function (dataAggregator, collectionName, query, callback,
   });
 }
 
-exports.updateElement = function (dataAggregator, collectionName, query, callback) {
-   mong.connect(url, function(err, db) {
+exports.setRunning = function (dataAggregator, running, callback) {
+  mong.connect(url, function(err, db) {
     var collection;
     if (err) {
       throw err;
@@ -76,25 +86,20 @@ exports.updateElement = function (dataAggregator, collectionName, query, callbac
     } else {
       collection = db.collection('data_bots');
       var bulk = collection.initializeUnorderedBulkOp();
-      bulk.find({'name': dataAggregator }).upsert().updateOne({ $set: { "running" : false } });
+      bulk.find({'name': dataAggregator}).upsert().updateOne({ $set: { "running" : running } });
       bulk.execute(function(err, result) {
         if (err) {
           throw err
         } else {
-          callback(result);
+          var cursor = collection.find({'name': 'current_data_aggregator'});
+          cursor.nextObject(function(err, item) {
+            callback(item);
+          });
         }
       });
     }
   });
 }
-
-/*
-exports.getDatabot = function (dataBot) {
-  mong.connect(url, function(err, db) {
-
-}
-*/
-
 
 exports.insertToDatabase = function(data, collectionName, clientMessage) {
   mong.connect(url, function(err, db) {
@@ -108,7 +113,6 @@ exports.insertToDatabase = function(data, collectionName, clientMessage) {
       clientMessage({"status":400});
       return;
     }
-
     try {
       var bulk = collection.initializeUnorderedBulkOp();
       for (var i in data) {
@@ -140,7 +144,6 @@ exports.insertAndReturnMong = function(data, collectionName, clientMessageFuncti
   _this.clientMessageFunction = clientMessageFunction;
   _this.callbackFunction = callbackFunction;
   _this.collectionName = collectionName;
-
   mong.connect(url, function(err, db) {
     if (err) {
       console.log(err);
@@ -154,14 +157,12 @@ exports.insertAndReturnMong = function(data, collectionName, clientMessageFuncti
       _this.clientMessageFunction({"status":400}, function () {});
       return;
     }
-
     _this.callMe = function() {
-      console.log("callMe() called");
+      log.callMeCallbackCalled();
       _this.collection.count(function (err, count) {
         _this.callbackFunction(count);
       });
     }
-
     try {
       var bulk = _this.collection.initializeUnorderedBulkOp();
       for (var i in data) {
@@ -189,8 +190,7 @@ exports.insertAndReturnMong = function(data, collectionName, clientMessageFuncti
 }
 
 exports.getDocumentCount = function (collectionName, callback) {
-  console.log("getDocument Count");
-  console.log(collectionName);
+  log.getDocumentCountStart(collectionName);
   this.callback = callback;
   this.collectionName = collectionName;
   _this = this;
@@ -199,13 +199,10 @@ exports.getDocumentCount = function (collectionName, callback) {
       throw err;
     }
     try {
-      console.log("Write before error");
-      console.log(_this.collectionName);
       _this.collection = db.collection(_this.collectionName);
-
+      log.getDocumentCountWrite(_this.collectionName);
     } catch (err) {
-      console.log("~~~error getting collection~~~~~~");
-      console.log(_this.collectionName);
+      log.getDocumentCountError(_this.collectionName);
       throw err;
     }
     _this.collection.count(function (err, count) {
@@ -222,21 +219,20 @@ exports.getData = function(data, collectionName, fn) {
 	  try {
 	  	collection = db.collection(collectionName);
 	  } catch (err) {
-	 		console.log("error getting collection");
+      log.errorGettingCollection();
 	  	db.createCollection(collectionName)
 	  }
 	  collection.insert(data, {w: 1}, function(err, result) {
 	  	if (!err) {
-        var d = JSON.stringify(result);
-        log.callbackOnSoloInsertion(d, fn);
-	  		fn(d);
+        var resultString = JSON.stringify(result);
+        log.callbackOnSoloInsertion(resultString, fn);
+	  		fn(resultString);
 	  	} else { log.insertionError(err)}
 	  });
 	});
 }
 
 exports.getDataBot = function(data, collectionName, fn) {
-
   mong.connect(url, function(err, db) {
     if(err) {
       throw err;
@@ -244,7 +240,7 @@ exports.getDataBot = function(data, collectionName, fn) {
     try {
       collection = db.collection(collectionName);
     } catch (err) {
-      console.log("error getting collection");
+      log.errorGettingCollection();
       db.createCollection(collectionName)
     }
     collection.insert(data, {w: 1}, function(err, result) {
@@ -256,68 +252,3 @@ exports.getDataBot = function(data, collectionName, fn) {
     });
   });
 }
-
-
-
-/*
-var crypt = require('crypto');
-
-exports.getEarlyRoute = function (collectionName, returnEarly, fn, returnTokenCallback) {
-
-  mong.connect(url, function(err, db) {
-    if (err) throw err;
-    var collection = db.collection(collectionName);
-
-    function getCount(val, callback) {
-      val.count(function (err, count) {
-        console.log(err);
-        console.log("COUNT IN CALLBACK");
-        var bool = false;
-        if (count > 0) bool = true;
-        callback(bool);
-      });
-    }
-
-    getCount(collection, function (bool) {
-      if (bool) {
-        var token = crypt.randomBytes(64).toString('hex');
-        var route = collectionName + '/' + token;
-        returnEarly(route, fn);
-        returnTokenCallback(token);
-        return ;
-      } else {
-        var route = collectionName + '/';
-        returnEarly(route, fn);
-      }
-    });
-  });
-}
-
-exports.buildRoute = function (data, collectionName, token, constructRoute, fn) {
-
-  mong.connect(url, function(err, db) {
-    console.log("second mong connect");
-    var jsonToInsert = {}, routeName = collectionName;
-    if (token !== undefined && token !== null) {
-      jsonToInsert[token] = data;
-      routeName = routeName + "/" + token;
-    } else {
-      jsonToInsert = data;
-    }
-    console.log("about to insert into collection");
-
-    var collection = db.collection(collectionName);
-
-    console.log(collection);
-    collection.insert(jsonToInsert, function (err, result) {
-      if (!err) {
-        console.log("no error - constructing route")
-        constructRoute(routeName, result);
-      } else {
-        console.warn(err.message);
-      }
-    });
-  });
-}
-
-*/

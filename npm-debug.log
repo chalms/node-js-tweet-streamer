@@ -1,0 +1,129 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'markdown', '-g' ]
+2 info using npm@1.4.9
+3 info using node@v0.10.28
+4 verbose cache add [ 'markdown', null ]
+5 verbose cache add name=undefined spec="markdown" args=["markdown",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: 'markdown',
+6 verbose parsed url   path: 'markdown',
+6 verbose parsed url   href: 'markdown' }
+7 silly lockFile 90320b91-markdown markdown
+8 verbose lock markdown /Users/jaclynfoss/.npm/90320b91-markdown.lock
+9 silly lockFile 90320b91-markdown markdown
+10 silly lockFile 90320b91-markdown markdown
+11 verbose addNamed [ 'markdown', '' ]
+12 verbose addNamed [ null, '*' ]
+13 silly lockFile b808a1dc-markdown markdown@
+14 verbose lock markdown@ /Users/jaclynfoss/.npm/b808a1dc-markdown.lock
+15 silly addNameRange { name: 'markdown', range: '*', hasData: false }
+16 verbose url raw markdown
+17 verbose url resolving [ 'https://registry.npmjs.org/', './markdown' ]
+18 verbose url resolved https://registry.npmjs.org/markdown
+19 info trying registry request attempt 1 at 21:13:56
+20 verbose etag "OP7S9NKHY053XZZDLL7VF7XL"
+21 http GET https://registry.npmjs.org/markdown
+22 http 304 https://registry.npmjs.org/markdown
+23 silly registry.get cb [ 304,
+23 silly registry.get   { date: 'Sat, 11 Oct 2014 01:13:56 GMT',
+23 silly registry.get     server: 'Apache',
+23 silly registry.get     via: '1.1 varnish',
+23 silly registry.get     'last-modified': 'Sat, 11 Oct 2014 01:13:56 GMT',
+23 silly registry.get     'cache-control': 'max-age=60',
+23 silly registry.get     etag: '"OP7S9NKHY053XZZDLL7VF7XL"',
+23 silly registry.get     'x-served-by': 'cache-jfk1034-JFK',
+23 silly registry.get     'x-cache': 'HIT',
+23 silly registry.get     'x-cache-hits': '1',
+23 silly registry.get     'x-timer': 'S1412990036.782364,VS0,VE82',
+23 silly registry.get     vary: 'Accept',
+23 silly registry.get     'content-length': '0',
+23 silly registry.get     'keep-alive': 'timeout=10, max=50',
+23 silly registry.get     connection: 'Keep-Alive' } ]
+24 verbose etag markdown from cache
+25 silly addNameRange number 2 { name: 'markdown', range: '*', hasData: true }
+26 silly addNameRange versions [ 'markdown',
+26 silly addNameRange   [ '0.1.0',
+26 silly addNameRange     '0.1.1',
+26 silly addNameRange     '0.1.2',
+26 silly addNameRange     '0.2.1',
+26 silly addNameRange     '0.3.0',
+26 silly addNameRange     '0.3.1',
+26 silly addNameRange     '0.4.0',
+26 silly addNameRange     '0.5.0' ] ]
+27 verbose addNamed [ 'markdown', '0.5.0' ]
+28 verbose addNamed [ '0.5.0', '0.5.0' ]
+29 silly lockFile a99f05a7-markdown-0-5-0 markdown@0.5.0
+30 verbose lock markdown@0.5.0 /Users/jaclynfoss/.npm/a99f05a7-markdown-0-5-0.lock
+31 silly lockFile a99f05a7-markdown-0-5-0 markdown@0.5.0
+32 silly lockFile a99f05a7-markdown-0-5-0 markdown@0.5.0
+33 silly lockFile b808a1dc-markdown markdown@
+34 silly lockFile b808a1dc-markdown markdown@
+35 silly resolved [ { name: 'markdown',
+35 silly resolved     version: '0.5.0',
+35 silly resolved     description: 'A sensible Markdown parser for javascript',
+35 silly resolved     keywords: [ 'markdown', 'text processing', 'ast' ],
+35 silly resolved     maintainers: [ [Object], [Object] ],
+35 silly resolved     contributors: [ [Object], [Object] ],
+35 silly resolved     bugs: { url: 'http://github.com/evilstreak/markdown-js/issues' },
+35 silly resolved     licenses: [ [Object] ],
+35 silly resolved     repository:
+35 silly resolved      { type: 'git',
+35 silly resolved        url: 'git://github.com/evilstreak/markdown-js.git' },
+35 silly resolved     main: './lib/index.js',
+35 silly resolved     bin: { md2html: './bin/md2html.js' },
+35 silly resolved     dependencies: { nopt: '~2.1.1' },
+35 silly resolved     devDependencies: { tap: '~0.3.3' },
+35 silly resolved     scripts: { test: 'tap ./test/*.t.js' },
+35 silly resolved     readme: '# markdown-js\n\nYet another markdown parser, this time for JavaScript. There\'s a few\noptions that precede this project but they all treat markdown to HTML\nconversion as a single step process. You pass markdown in and get HTML\nout, end of story. We had some pretty particular views on how the\nprocess should actually look, which include:\n\n  * producing well-formed HTML. This means that `em` and `strong` nesting\n    is important, as is the ability to output as both HTML and XHTML\n\n  * having an intermediate representation to allow processing of parsed\n    data (we in fact have two, both [JsonML]: a markdown tree and an HTML tree)\n\n  * being easily extensible to add new dialects without having to\n    rewrite the entire parsing mechanics\n\n  * having a good test suite. The only test suites we could find tested\n    massive blocks of input, and passing depended on outputting the HTML\n    with exactly the same whitespace as the original implementation\n\n[JsonML]: http://jsonml.org/ "JSON Markup Language"\n\n## Installation\n\nJust the `markdown` library:\n\n    npm install markdown\n\nOptionally, install `md2html` into your path\n\n    npm install -g markdown\n\n## Usage\n\n### Node\n\nThe simple way to use it with node is:\n\n```js\nvar markdown = require( "markdown" ).markdown;\nconsole.log( markdown.toHTML( "Hello *World*!" ) );\n```\n\n### Browser\n\nIt also works in a browser; here is a complete example:\n\n```html\n<!DOCTYPE html>\n<html>\n  <body>\n    <textarea id="text-input" oninput="this.editor.update()"\n              rows="6" cols="60">Type **Markdown** here.</textarea>\n    <div id="preview"> </div>\n    <script src="lib/markdown.js"></script>\n    <script>\n      function Editor(input, preview) {\n        this.update = function () {\n          preview.innerHTML = markdown.toHTML(input.value);\n        };\n        input.editor = this;\n        this.update();\n      }\n      var $ = function (id) { return document.getElementById(id); };\n      new Editor($("text-input"), $("preview"));\n    </script>\n  </body>\n</html>\n```\n\n### Command line\n\nAssuming you\'ve installed the `md2html` script (see Installation,\nabove), you can convert markdown to html:\n\n```bash\n# read from a file\nmd2html /path/to/doc.md > /path/to/doc.html\n\n# or from stdin\necho \'Hello *World*!\' | md2html\n```\n\n### More options\n\nIf you want more control check out the documentation in\n[lib/markdown.js] which details all the methods and parameters\navailable (including examples!). One day we\'ll get the docs generated\nand hosted somewhere for nicer browsing.\n\n[lib/markdown.js]: http://github.com/evilstreak/markdown-js/blob/master/lib/markdown.js\n\nMeanwhile, here\'s an example of using the multi-step processing to\nmake wiki-style linking work by filling in missing link references:\n\n```js\nvar md = require( "markdown" ).markdown,\n    text = "[Markdown] is a simple text-based [markup language]\\n" +\n           "created by [John Gruber]\\n\\n" +\n           "[John Gruber]: http://daringfireball.net";\n\n// parse the markdown into a tree and grab the link references\nvar tree = md.parse( text ),\n    refs = tree[ 1 ].references;\n\n// iterate through the tree finding link references\n( function find_link_refs( jsonml ) {\n  if ( jsonml[ 0 ] === "link_ref" ) {\n    var ref = jsonml[ 1 ].ref;\n\n    // if there\'s no reference, define a wiki link\n    if ( !refs[ ref ] ) {\n      refs[ ref ] = {\n        href: "http://en.wikipedia.org/wiki/" + ref.replace(/\\s+/, "_" )\n      };\n    }\n  }\n  else if ( Array.isArray( jsonml[ 1 ] ) ) {\n    jsonml[ 1 ].forEach( find_link_refs );\n  }\n  else if ( Array.isArray( jsonml[ 2 ] ) ) {\n    jsonml[ 2 ].forEach( find_link_refs );\n  }\n} )( tree );\n\n// convert the tree into html\nvar html = md.renderJsonML( md.toHTMLTree( tree ) );\nconsole.log( html );\n```\n\n## Intermediate Representation\n\nInternally the process to convert a chunk of markdown into a chunk of\nHTML has three steps:\n\n 1. Parse the markdown into a JsonML tree. Any references found in the\n    parsing are stored in the attribute hash of the root node under the\n    key `references`.\n\n 2. Convert the markdown tree into an HTML tree. Rename any nodes that\n    need it (`bulletlist` to `ul` for example) and lookup any references\n    used by links or images. Remove the references attribute once done.\n\n 3. Stringify the HTML tree being careful not to wreck whitespace where\n    whitespace is important (surrounding inline elements for example).\n\nEach step of this process can be called individually if you need to do\nsome processing or modification of the data at an intermediate stage.\nFor example, you may want to grab a list of all URLs linked to in the\ndocument before rendering it to HTML which you could do by recursing\nthrough the HTML tree looking for `a` nodes.\n\n## Running tests\n\nTo run the tests under node you will need tap installed (it\'s listed as a\n`devDependencies` so `npm install` from the checkout should be enough), then do\n\n    $ npm test\n\n## Contributing\n\nDo the usual github fork and pull request dance. Add yourself to the\ncontributors section of [package.json](/package.json) too if you want to.\n\n## License\n\nReleased under the MIT license.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the "Software"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n',
+35 silly resolved     readmeFilename: 'README.markdown',
+35 silly resolved     homepage: 'https://github.com/evilstreak/markdown-js',
+35 silly resolved     _id: 'markdown@0.5.0',
+35 silly resolved     _shasum: '28205b565a8ae7592de207463d6637dc182722b2',
+35 silly resolved     _from: 'markdown@',
+35 silly resolved     _resolved: 'https://registry.npmjs.org/markdown/-/markdown-0.5.0.tgz' } ]
+36 info install markdown@0.5.0 into /usr/local/lib
+37 info installOne markdown@0.5.0
+38 info /usr/local/lib/node_modules/markdown unbuild
+39 verbose tar unpack /Users/jaclynfoss/.npm/markdown/0.5.0/package.tgz
+40 silly lockFile 18cd3bdc--local-lib-node-modules-markdown tar:///usr/local/lib/node_modules/markdown
+41 verbose lock tar:///usr/local/lib/node_modules/markdown /Users/jaclynfoss/.npm/18cd3bdc--local-lib-node-modules-markdown.lock
+42 silly lockFile 9721fdee-s-npm-markdown-0-5-0-package-tgz tar:///Users/jaclynfoss/.npm/markdown/0.5.0/package.tgz
+43 verbose lock tar:///Users/jaclynfoss/.npm/markdown/0.5.0/package.tgz /Users/jaclynfoss/.npm/9721fdee-s-npm-markdown-0-5-0-package-tgz.lock
+44 silly gunzTarPerm modes [ '755', '644' ]
+45 error Error: EACCES, mkdir '/usr/local/lib/node_modules/markdown'
+45 error  { [Error: EACCES, mkdir '/usr/local/lib/node_modules/markdown']
+45 error   errno: 3,
+45 error   code: 'EACCES',
+45 error   path: '/usr/local/lib/node_modules/markdown',
+45 error   fstream_type: 'Directory',
+45 error   fstream_path: '/usr/local/lib/node_modules/markdown',
+45 error   fstream_class: 'DirWriter',
+45 error   fstream_stack:
+45 error    [ '/usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23',
+45 error      '/usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:37:53',
+45 error      'Object.oncomplete (fs.js:107:15)' ] }
+46 error Please try running this command again as root/Administrator.
+47 error System Darwin 13.4.0
+48 error command "node" "/usr/local/bin/npm" "install" "markdown" "-g"
+49 error cwd /Users/jaclynfoss/Desktop/Twitter Node
+50 error node -v v0.10.28
+51 error npm -v 1.4.9
+52 error path /usr/local/lib/node_modules/markdown
+53 error fstream_path /usr/local/lib/node_modules/markdown
+54 error fstream_type Directory
+55 error fstream_class DirWriter
+56 error code EACCES
+57 error errno 3
+58 error stack Error: EACCES, mkdir '/usr/local/lib/node_modules/markdown'
+59 error fstream_stack /usr/local/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23
+59 error fstream_stack /usr/local/lib/node_modules/npm/node_modules/mkdirp/index.js:37:53
+59 error fstream_stack Object.oncomplete (fs.js:107:15)
+60 verbose exit [ 3, true ]

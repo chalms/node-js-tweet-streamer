@@ -12,11 +12,11 @@ describe('QueryIssuer', function () {
     }
     QueryIssuer.issueQuery(args, function (response) {
       MongoClient.insertToDatabase(response["data"], "GWPH_test", function (messageToClient) {
-        console.log("inserted"); 
-        expect(messageToClient["status"]).toEqual(200); 
-        done(); 
-      }); 
-    }); 
+        console.log("inserted");
+        expect(messageToClient["status"]).toEqual(200);
+        done();
+      });
+    });
   });
 });
 
@@ -29,32 +29,32 @@ describe('QueryIssuer', function () {
       "collection":"GWPH_test"
     }
     MongoClient.getDocumentCount(args["collection"], function (c) {
-      var count = c; 
+      var count = c;
       QueryIssuer.issueQuery(args, function (response) {
-        console.log("Response received!"); 
-        MongoClient.insertAndReturnMong(response["data"], "GWPH_test", 
+        console.log("Response received!");
+        MongoClient.insertAndReturnMong(response["data"], "GWPH_test",
         function (messageToClient, callback) {
-          expect(messageToClient["status"]).toEqual(200); 
-          callback(); 
-        }, 
+          expect(messageToClient["status"]).toEqual(200);
+          callback();
+        },
         function (number) {
-          console.log(number + " <- number, count -> " + count); 
-          expect(number).toNotEqual(count); 
-          done();  
-        }); 
-      }); 
-    }); 
-  }); 
+          console.log(number + " <- number, count -> " + count);
+          expect(number).toNotEqual(count);
+          done();
+        });
+      });
+    });
+  });
 });
 
 
 describe('QueryIssuer', function () {
   it ('it should run a simple current query', function (done) {
     MongoClient.getMinAndMaxValues("GWPH_test", function (min, max) {
-      expect(min < max).toBe(true); 
-      done(); 
-    }); 
-  }); 
+      expect(min < max).toBe(true);
+      done();
+    });
+  });
 });
 
 describe('QueryIssuer', function () {
@@ -64,18 +64,18 @@ describe('QueryIssuer', function () {
         "q":"GWPH",
         "since":"2013-06-01",
         "until":"2014-03-01"
-      }, 
+      },
       "collection":"GWPH_test"
     }
     QueryIssuer.issueQuery(args, function (response) {
-      log.queryResponse(response); 
+      log.queryResponse(response);
       MongoClient.insertToDatabase(response["data"], "GWPH_test", function (messageToClient) {
-        expect(messageToClient).toContain("status"); 
+        expect(messageToClient).toContain("status");
         expect(messageToClient["status"]).toEqual(200)
-        done(); 
-      }); 
+        done();
+      });
     });
-  }); 
+  });
 });
 
 
@@ -84,47 +84,47 @@ describe('QueryIssuer', function () {
     args = {
       "user" : {
         "screen_name": "offportal"
-      }, 
+      },
       "collection" : "twitter_users_test"
     }
     MongoClient.getDocumentCount("twitter_users_test", function (count, m) {
-     // m.close(); 
+     // m.close();
       QueryIssuer.issueQuery(args, function (response) {
-        log.queryResponse(response); 
-        MongoClient.insertAndReturnMong(response["data"], args["collection"], 
+        log.queryResponse(response);
+        MongoClient.insertAndReturnMong(response["data"], args["collection"],
         function (messageToClient, callback) {
-          expect(messageToClient).toContain("status"); 
-          expect(messageToClient["status"]).toEqual(200); 
-          callback(); 
-        }, 
+          expect(messageToClient).toContain("status");
+          expect(messageToClient["status"]).toEqual(200);
+          callback();
+        },
         function (collection, mong) {
-          expect(collection.count()).toEqual(count+1); 
+          expect(collection.count()).toEqual(count+1);
         //  mong.close();
-          done();  
-        }); 
-      }); 
-    }); 
+          done();
+        });
+      });
+    });
   });
 });
 
 describe('QueryIssuer', function () {
   xit ('it should run historical queries using the scraper', function (done) {
     args = {
-      "topsy" : {
+      "historical" : {
         "q":"GWPH",
         "since":"2013-06-01",
         "until":"2014-03-01"
       }, "collection" : "GWPH_test"
     }
     QueryIssuer.issueQuery(args, function (response) {
-      log.queryResponse(response); 
+      log.queryResponse(response);
       MongoClient.insertToDatabase(response["data"],  "GWPH_test", function (messageToClient) {
-        expect(messageToClient).toContain("status"); 
+        expect(messageToClient).toContain("status");
         expect(messageToClient["status"]).toEqual(200)
-        done(); 
-      }); 
+        done();
+      });
     });
-  }); 
+  });
 });
 
 describe('QueryIssuer', function () {
@@ -135,12 +135,12 @@ describe('QueryIssuer', function () {
       }, "collection" : "GWPH_test"
     }
     QueryIssuer.issueQuery(args, function (response) {
-      log.queryResponse(response); 
+      log.queryResponse(response);
       MongoClient.insertToDatabase(response["data"], "GWPH_test", function (messageToClient) {
-        expect(messageToClient).toContain("status"); 
-        expect(messageToClient["status"]).toEqual(200); 
-        done(); 
+        expect(messageToClient).toContain("status");
+        expect(messageToClient["status"]).toEqual(200);
+        done();
       })
-    }); 
+    });
   });
 });

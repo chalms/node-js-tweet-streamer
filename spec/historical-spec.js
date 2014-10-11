@@ -1,9 +1,9 @@
 var request = require('request'),
-Topsy = require('../topsy.js')
+Historical = require('../historical.js')
 
-describe('Topsy', function () {
+describe('Historical', function () {
   it ('it should return the correct stack', function () {
-    // http://topsy.com/s?q=John%20OR%20Sandy&mintime=1388541601&maxtime=1393639201
+    // http://historical.com/s?q=John%20OR%20Sandy&mintime=1388541601&maxtime=1393639201
     json = {
       "q":"GWPH",
       "since":"2014-01-01",
@@ -14,6 +14,6 @@ describe('Topsy', function () {
     function done(data) {
       console.log(data);
     }
-    expect(Topsy.launch(json, "", done)).toEqual(outputLinks);
+    expect(Historical.launch(json, "", done)).toEqual(outputLinks);
   });
 });

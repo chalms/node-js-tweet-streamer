@@ -17,7 +17,6 @@ The first value can be either (or both) of "search" or "stream". Currently _the 
 
 The only mandatory parameter for "search" is "q". The "q" key denotes the query you want to be executed. The server will accept all params twitter accepts for "q". Read this for more information https://dev.twitter.com/docs/using-search.
 
-
 ### Date Ranges
 
 You can search for all tweets before a particular date using the "since" key. Set the value to a standardized DateTime string with timezone. The format is _YYYY-MM-DD_.
@@ -173,6 +172,32 @@ Stream for a minute for all live tweets containing a particular youtube link
       "track": ["youtube.com/abc1223"],
       "limit": 100000,
       "timeLimit": 60000
+    }
+  }
+
+### Example 4
+
+  {
+    "search": {
+      "q": "GWPH OR GW Pharmaceuticals", //<----- this is the new query string
+      "since": "2013-06-01", //<---- day-month-year
+      "until": "2014-01-01",
+      "geocode": {
+        "latitude": 113.123,
+        "longitude": -20.00,
+        "radius": {
+          "unit":"mi", //or can be 'km'
+          "value":5
+        }
+      },
+      "since_id": 12353, //<--- the id of another tweet
+      "result_type": "popular" //<-- can also be recent or mixed
+    },
+    "stream": {
+      "track":["GWPH", "GW pharma", "GW Pharmaceuticals"],
+      "location":[123.1233, 0, 123.33, 100.00], //<-- some bounded coordinate box
+      "limit": 200, //<- default is 100
+      "timeLimit": 10000 //<- default is 3000 (3 seconds)
     }
   }
 

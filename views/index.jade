@@ -11,7 +11,14 @@ block content
         th Current Data
       tr
         td
-          div(id="current_data_bot")
+          script.
+            if ('#{query}' === undefined) {
+             '#{query = "GWPH"}'
+            }
+            if ('#{collection}' === undefined) {
+              '#{collection = "GWPH_test"}'
+            }
+          div(class="form", id="current_data_bot")
             h5 Collection
             input(id="collection", type="text", name="collection", value="#{collection}")
             h5 Query
@@ -21,21 +28,62 @@ block content
             $(document).ready(function () {
               $("#current_data_bot_button").click(function () {
                 var form = $("#current_data_bot input");
+                $("#current_data_bot").css('background','#DD0000');
                 console.log(form);
                 var d = {};
-                d["collectionName"] = $("#collection").attr('value');
-                d["query"] = $("#query").attr('value');
+                d["collectionName"] = $("#collection")[0].value;
+                d["query"] = $("#query")[0].value;
+                console.log(d);
+                function timerFunction () {
+                  $.ajax({
+                    url: '/current_timer.json',
+                    type: 'get',
+                    success: function (data) {
+                      console.log("timer funciton");
+                      console.log(data);
+                      var f = JSON.parse(data);
+                      console.log(f);
+                      if (f === null) {
+                        setTimeout(timerFunction(), 1000);
+                        return;
+                      }
+                      var bool = f["running"];
+                      console.log("testing bool");
+                      console.log(bool);
+                      if (bool) {
+                        setTimeout(timerFunction(), 1000);
+                      } else {
+                        $("#current_data_bot").css('background','#FFFFFF');
+                        // done!
+                      }
+                    },
+                    error: function (err) {
+                      console.log(err);
+                      setTimeout(timerFunction(), 1000);
+                    }
+                  });
+                }
                 $.ajax({
                   url: '/current_timer.json',
                   type: 'post',
                   data: d,
                   success: function (data) {
                     console.log(data);
-                    if (JSON.parse(data["running"])) {
-                      $("#current_data_bot").css('background','#00DD00');
+                    var g = JSON.parse(data);
+                    console.log(g);
+                    var c = g["running"];
+                    console.log(g["running"]);
+                    if (c) {
+                      $("#current_data_bot").css('background','#GGFFGG');
+                      timerFunction();
                     } else {
-                      $("#current_data_bot").css('background','#DD0000');
+                      console.log("not running?");
                     }
+                  },
+                  error: function (err) {
+                    console.log(data);
+                    $("#current_data_bot").css('background','#FFDDFF');
+                    timerFunction();
                   }
                 });
               });

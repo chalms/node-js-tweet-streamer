@@ -6,7 +6,7 @@ Record = require('./util/record.js');
 
 var Transform = require('stream').Transform;
 var parser = new Transform({ encoding: 'utf8'});
-var _this; 
+var _this;
 
 process.on('uncaughtException', function (err) {
   console.log('Caught exception: ' + err.stack);
@@ -14,33 +14,38 @@ process.on('uncaughtException', function (err) {
 });
 
 TwitterStreamer = function(collectionName) {
-  log.twitStreamCreated(collectionName); 
+  log.twitStreamCreated(collectionName);
 	this.T = new Twit(config);
   this.collection = collectionName;
-  _this = this; 
+  _this = this;
 
 }
 
 TwitterStreamer.prototype.returnStatus = function (data, callback) {
   if (data) {
-    callback({ "status": 200}); 
+    callback({ "status": 200});
   } else {
     callback({ "status": 400})
   }
 }
 
 TwitterStreamer.prototype.search = function(args, searchCallback) {
-  console.log(args); 
-  log.searchArgs(args); 
+  console.log(args);
+  log.searchArgs(args);
 
-  mongoClient.getMinAndMaxValues(_this.collection, function (min, max) {
-     args["max_id"] = min; 
-      _this.T.get('search/tweets', args, function(err, data, response) {
+  mongoClient.getMinAndMaxValues(_this.collection, args, function (min, max) {
+    if (min !== null) {
+      args["max_id"] = min;
+    }
+    if (max !== null && args.hasOwnProperty("max_id")) {
+      args["min_id"] = max;
+    }
+    _this.T.get('search/tweets', args, function(err, data, response) {
       if (err) {
-        log.twitSearchError(err); 
+        log.twitSearchError(err);
       } else {
-        log.twitSearchSuccess(data); 
-        searchCallback({ "data": data["statuses"]}); 
+        log.twitSearchSuccess(data);
+        searchCallback({ "data": data["statuses"]});
       }
     });
   });
