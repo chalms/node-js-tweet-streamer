@@ -139,52 +139,59 @@ exports.insertToDatabase = function(data, collectionName, clientMessage) {
   });
 }
 
-exports.insertAndReturnMong = function(data, collectionName, clientMessageFunction, callbackFunction) {
+exports.insertAndReturnMong = function(data, collectionName, ref, callbackFunction) {
   _this = this;
-  _this.clientMessageFunction = clientMessageFunction;
   _this.callbackFunction = callbackFunction;
   _this.collectionName = collectionName;
+
   mong.connect(url, function(err, db) {
     if (err) {
       console.log(err);
-      _this.clientMessageFunction({"status":400}, function () {});
+      _this.callbackFunction(null, ref);
       return;
     }
     try {
       _this.collection = db.collection(_this.collectionName);
     } catch (err) {
       console.log(err);
-      _this.clientMessageFunction({"status":400}, function () {});
+      _this.callbackFunction(null, ref);
       return;
     }
-    _this.callMe = function() {
+    _this.callMe = function(r) {
       log.callMeCallbackCalled();
       _this.collection.count(function (err, count) {
-        _this.callbackFunction(count);
+        _this.callbackFunction(count, r);
       });
     }
+
     try {
       var bulk = _this.collection.initializeUnorderedBulkOp();
-      for (var i in data) {
-        var elem = data[i];
-        bulk.find({
-          $or: [ {
-            "id": elem["id"]
-          }, {
-            "id_str": elem["id_str"]
-          } ]
-        }).upsert().updateOne({ $set: elem });
-      }
-      bulk.execute(function(err, result) {
-        if (err) {
-          throw err
-        } else {
-          _this.clientMessageFunction({"status":200}, _this.callMe);
+      if (data.length > 0) {
+        for (var i in data) {
+          var elem = data[i];
+          bulk.find({
+            $or: [ {
+              "id": elem["id"]
+            }, {
+              "id_str": elem["id_str"]
+            } ]
+          }).upsert().updateOne({ $set: elem });
         }
-      });
+        bulk.execute(function(err, result) {
+          if (err) {
+            console.log("In insert and return mong");
+            throw err
+          } else {
+            _this.callMe(ref);
+          }
+        });
+      } else {
+        console.log("Skipping bulk execution and calling callback");
+        _this.callMe(ref);
+      }
     } catch (err) {
       console.log(err);
-      _this.clientMessageFunction({"status":400}, _this.callMe);
+      _this.callMe(ref);
     }
   });
 }

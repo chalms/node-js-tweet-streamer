@@ -44,14 +44,14 @@ block content
                       var f = JSON.parse(data);
                       console.log(f);
                       if (f === null) {
-                        setTimeout(timerFunction(), 1000);
+                        setTimeout(timerFunction(), 10000);
                         return;
                       }
                       var bool = f["running"];
                       console.log("testing bool");
                       console.log(bool);
                       if (bool) {
-                        setTimeout(timerFunction(), 1000);
+                        setTimeout(timerFunction(), 10000);
                       } else {
                         $("#current_data_bot").css('background','#FFFFFF');
                         // done!
@@ -59,7 +59,7 @@ block content
                     },
                     error: function (err) {
                       console.log(err);
-                      setTimeout(timerFunction(), 1000);
+                      setTimeout(timerFunction(), 10000);
                     }
                   });
                 }

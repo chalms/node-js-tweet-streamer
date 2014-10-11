@@ -31,7 +31,6 @@ exports.issueQuery = function (args, dataHandler) {
         console.log(searchParams);
         twitter.search(searchParams, function (result) {
           console.log("Data handler: ");
-          console.log(result);
           dataHandler(result);
         });
       });

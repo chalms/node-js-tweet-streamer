@@ -38,7 +38,7 @@ Log.prototype.twitSearchError = function (err) {
 
 Log.prototype.twitSearchSuccess = function (data) {
     console.log("~~~~~~~ no error found, data below ~~~~~~~~");
-    console.log(data);
+   // console.log(data);
     console.log("~~~~~~~~ calling mongo client with data and _this.collection ~~~~~~~~");
 };
 
@@ -164,9 +164,9 @@ Log.prototype.newDocumentCount = function (c) {
   console.log("issuing query with args: ");
 }
 
-Log.prototype.issueQueryResponse = function (magArgs) {
+Log.prototype.issueQueryResponse = function (queryParams) {
   console.log("issue query called with response: ");
-  console.log(magArgs);
+  console.log(queryParams);
 }
 
 Log.prototype.writeNumberAndCount = function(number, count) {
