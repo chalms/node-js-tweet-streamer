@@ -14,6 +14,7 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var errorHandler = require('errorhandler');
+var colors = require('colors');
 var app = express();
 
 app.set('port', process.env.PORT || 3000);

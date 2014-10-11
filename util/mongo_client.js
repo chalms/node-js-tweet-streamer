@@ -3,6 +3,9 @@ var log = require('./log.js');
 var url = "mongodb://Andrew:twitter@ds053469.mongolab.com:53469/tweets";
 var finish = require('finish');
 var request = require('request');
+var colors = require('colors');
+var Twit = require('twit');
+var config1 = require('./config1.js');
 
 exports.createCollection = function (db, collectionName, callback) {
   var collection;
@@ -16,9 +19,9 @@ exports.createCollection = function (db, collectionName, callback) {
   function createSparseUniqueIndex(params, coll, callback) {
     coll.ensureIndex(params, { sparse: true, unique: true}, function (err, name) {
       if (err) {
-        console.log("ERROR CREATING INDEX");
+        console.log("ERROR CREATING INDEX".red);
       } else {
-        console.log("NEW INDEX CREATED");
+        console.log("NEW INDEX CREATED".green);
         callback(coll);
       }
     });
@@ -44,9 +47,9 @@ exports.createUserDatabase = function (db, collectionName, callback) {
   function createSparseUniqueIndex(params, coll, callback) {
     coll.ensureIndex(params, { sparse: true, unique: true}, function (err, name) {
       if (err) {
-        console.log("ERROR CREATING INDEX");
+        console.log("ERROR CREATING INDEX".red);
       } else {
-        console.log("NEW INDEX CREATED");
+        console.log("NEW INDEX CREATED".green);
         callback(coll);
       }
     });
@@ -60,95 +63,94 @@ exports.createUserDatabase = function (db, collectionName, callback) {
 
 
 exports.loadUserDataForTweetCollection = function (collectionName, callback) {
-  _this = this;
+  var _ref = this;
+  var twit = new Twit(config1);
   mong.connect(url, function(err, db) {
+
     var statusCollection;
     try {
       statusCollection = db.collection(collectionName);
     } catch (err) {
       callback(err, null);
     }
-    var items = [];
-    _this.createUserDatabase(db, 'user_info_test', function (collection) {
-      var cursor = statusCollection.find();
-      finish(function(async) {
-        cursor.nextObject(function (err, item) {
-          async(function (done) {
-            if (items.length > 20) {
-              if (item) {
-                console.log("ITEM EXISTS");
-                if (item.hasOwnProperty('user')) {
-                  console.log("ITEM HAS PROPERTY 'user'");
-                  console.log(item.user);
-                  if (item.user.hasOwnProperty('id')) {
-                    console.log("USER HAS ID");
-                    console.log(item.user.id);
-                    var url = "https://api.twitter.com/1.1/users/show.json?" + "user_id" + "=" + item.user.id;
-                    request(url, function (error, response, json) {
-                      console.log("USER LOOKUP RESPONSE -> " + response);
-                      console.log(response);
-                      var jsonObject = JSON.parse(json);
-                      items.push(jsonObject);
-                    });
-                  } else if (item.user.hasOwnProperty('id_str')) {
-                    console.log("USER HAS ID_STR");
-                    console.log(item.user.id_str);
-                    var url = "https://api.twitter.com/1.1/users/show.json?" + "user_id" + "=" + item.user.id_str;
-                    request(url, function (error, response, json) {
-                      console.log("USER LOOKUP RESPONSE -> " + response);
-                      console.log(response);
-                      var jsonObject = JSON.parse(json);
-                      items.push(jsonObject);
-                    });
+    var backupCollection;
+    try {
+      backupCollection = db.collection('user_info_test');
+    } catch (err) {
+      callback(err, null);
+    }
+    _ref.items = [];
+    var cursor;
+
+
+    function clearBatch(it, items, callback) {
+      if(it === null) {
+        log.batchCleared();
+      } else {
+        callback(it, items);
+      }
+    }
+
+    function processItem(err, itemObj) {
+      clearBatch(itemObj, _ref.items, function (item, items) {
+        console.log("RIGHT BEFORE IN CALLBACK".blue);
+        console.log("RIGHT AFTER IN CALLBACK".blue);
+        _ref.items = items;
+        if (item) {
+          if (item.hasOwnProperty('user')) {
+            var id = null;
+            if (item.user.hasOwnProperty('id')) {
+              id = item.user.id
+            } else if (item.user.hasOwnProperty('id_str')) {
+              id = item.user.id_str;
+            }
+            if (id !== null) {
+              twit.get('users/show',
+              {
+                "user_id":id
+              }, function (err, reply, json) {
+                if (!err) {
+                  if (typeof reply === "string") {
+                    reply = JSON.parse(reply);
                   }
-                }
-              }
-            } else {
-              var bulk = collection.initializeUnorderedBulkOp();
-              for (var i in items) {
-                var elem = items[i];
-                bulk.find({
-                  $or: [ {
-                    "id": elem["id"]
-                  }, {
-                    "id_str": elem["id_str"]
-                  } ]
-                }).upsert().updateOne({ $set: elem });
-              }
-              bulk.execute(function(err, result) {
-                if (err) {
-                  throw err
+                  var elem = reply;
+                  var collection = _ref.collection ? _ref.collection : backupCollection;
+                  collection.update({
+                      $or: [ {
+                        "id": elem["id"]
+                      }, {
+                        "id_str": elem["id_str"]
+                      } ]
+                    },
+                    {
+                      $set: elem
+                    },
+                    {
+                      upsert: true,
+                      safe: false
+                    }, function (err,data) {
+                      if (err){
+                        console.log(err);
+                      }else{
+                        console.log("No errors data set");
+                      }
+                    }
+                  );
                 } else {
-                  items = [];
+                  console.log(err);
                 }
+                cursor.nextObject(processItem);
               });
             }
-          });
-        });
-      }, function (err, data) {
-        try {
-          var bulk = collection.initializeUnorderedBulkOp();
-            for (var i in data) {
-            var elem = data[i];
-            bulk.find({
-              $or: [ {
-                "id": elem["id"]
-              }, {
-                "id_str": elem["id_str"]
-              } ]
-            }).upsert().updateOne({ $set: elem });
           }
-          bulk.execute(function(err, result) {
-            if (err) {
-              callback(err, null);
-            } else {
-              callback(null, collection.count);
-            }
-          });
-        } catch (err) {
-          callback(err, null);
         }
       });
+    };
+
+    _ref.createUserDatabase(db, 'user_info_test', function (col) {
+      _ref.collection = col;
+      cursor = statusCollection.find();
+      cursor.nextObject(processItem);
     });
   });
 };
