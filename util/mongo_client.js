@@ -91,10 +91,71 @@ exports.loadUserDataForTweetCollection = function (collectionName, callback) {
       }
     }
 
+    function updateCollection(elem, collection) {
+      collection.update({
+          $or: [ {
+            "id": elem["id"]
+          }, {
+            "id_str": elem["id_str"]
+          } ]
+        },
+        {
+          $set: elem
+        },
+        {
+          upsert: true,
+          safe: false
+        }, function (err,data) {
+          if (err){
+            console.log(err);
+          }else{
+            console.log("No errors data set");
+          }
+        }
+      );
+    }
+
+    function returnError(elem, callback) {
+      var el;
+      if (elem.hasOwnProperty("error")) {
+        el = elem["error"];
+      } else {
+        el = elem;
+      }
+      if (el.hasOwnProperty("statusCode")) {
+        if (el["statusCode"] === 429) {
+          console.log("twitter rate limit error".toUpperCase().red);
+        } else {
+          console.log(message.toUpperCase().red);
+          cursor.nextObject(callback);
+        }
+      }
+    }
+
+    function insertItem(id, item, collection, callback) {
+      twit.get('users/show',
+      {
+        "user_id":id
+      }, function (err, reply, json) {
+        if (!err) {
+          if (typeof reply === "string") {
+            reply = JSON.parse(reply);
+          }
+          var elem = reply;
+          elem["date_of_access"] = new Date();
+          if (elem.hasOwnProperty("error")) {
+            returnError(elem, callback)
+          } else if (result.hasOwnProperty("data")) {
+            updateCollection(elem, collection);
+          }
+        } else {
+          returnError(err, callback);
+        }
+      });
+    }
+
     function processItem(err, itemObj) {
       clearBatch(itemObj, _ref.items, function (item, items) {
-        console.log("RIGHT BEFORE IN CALLBACK".blue);
-        console.log("RIGHT AFTER IN CALLBACK".blue);
         _ref.items = items;
         if (item) {
           if (item.hasOwnProperty('user')) {
@@ -104,49 +165,20 @@ exports.loadUserDataForTweetCollection = function (collectionName, callback) {
             } else if (item.user.hasOwnProperty('id_str')) {
               id = item.user.id_str;
             }
+            var collection = _ref.collection ? _ref.collection : backupCollection;
             if (id !== null) {
-              twit.get('users/show',
-              {
-                "user_id":id
-              }, function (err, reply, json) {
-                if (!err) {
-                  if (typeof reply === "string") {
-                    reply = JSON.parse(reply);
-                  }
-                  var elem = reply;
-                  var collection = _ref.collection ? _ref.collection : backupCollection;
-                  collection.update({
-                      $or: [ {
-                        "id": elem["id"]
-                      }, {
-                        "id_str": elem["id_str"]
-                      } ]
-                    },
-                    {
-                      $set: elem
-                    },
-                    {
-                      upsert: true,
-                      safe: false
-                    }, function (err,data) {
-                      if (err){
-                        console.log(err);
-                      }else{
-                        console.log("No errors data set");
-                      }
-                    }
-                  );
+              collection.find({ $or: [{"id": item["id"]}, {"id_str": item["id_str"]}]}).count(function (err, count) {
+                if (count === 0) {
+                  insertItem(id, item, collection, processItem);
                 } else {
-                  console.log(err);
+                  cursor.nextObject(processItem);
                 }
-                cursor.nextObject(processItem);
               });
             }
           }
         }
       });
     };
-
     _ref.createUserDatabase(db, 'user_info_test', function (col) {
       _ref.collection = col;
       cursor = statusCollection.find();
@@ -227,8 +259,7 @@ exports.setNewQuery = function (dataAggregator, collectionName, query, callback,
   });
 }
 
-
-exports.setRunning = function (dataAggregator, running, callback) {
+exports.setRunning = function (dataAggregator, options, callback) {
   mong.connect(url, function(err, db) {
     var collection;
     if (err) {
@@ -237,7 +268,7 @@ exports.setRunning = function (dataAggregator, running, callback) {
     } else {
       collection = db.collection('data_bots');
       var bulk = collection.initializeUnorderedBulkOp();
-      bulk.find({'name': dataAggregator}).upsert().updateOne({ $set: { "running" : running } });
+      bulk.find({'name': dataAggregator}).upsert().updateOne({ $set: options});
       bulk.execute(function(err, result) {
         if (err) {
           throw err
@@ -418,39 +449,3 @@ exports.getDocumentCount = function (collectionName, bool, callback) {
   });
 }
 
-
-exports.getData = function(data, collectionName, callbackGetData) {
-	mong.connect(url, function(err, db) {
-	  if(err) {
-	  	throw err;
-	  }
-    collection = db.collection('collectionName');
-    collection.insert(data, {w: 1}, function(err, result) {
-      if (!err) {
-        var d = JSON.stringify(result);
-        log.callbackOnSoloInsertion(d, callbackGetData);
-        callbackGetData(d);
-      } else {
-        log.insertionError(err)
-      }
-    });
-	});
-}
-
-exports.getDataBot = function(data, collectionNm, callbackGetDataBot) {
-  mong.connect(url, function(err, db) {
-    if(err) {
-      throw err;
-    }
-    collection = db.collection('collectionName');
-    collection.insert(data, {w: 1}, function(err, result) {
-      if (!err) {
-        var d = JSON.stringify(result);
-        log.callbackOnSoloInsertion(d, callbackGetDataBot);
-        callbackGetDataBot(d);
-      } else {
-        log.insertionError(err)
-      }
-    });
-  });
-}

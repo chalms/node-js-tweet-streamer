@@ -43,6 +43,7 @@ TwitterStreamer.prototype.search = function(args, searchCallback) {
     _this.T.get('search/tweets', args, function(err, data, response) {
       if (err) {
         log.twitSearchError(err);
+        searchCallback({"error" : err});
       } else {
         log.twitSearchSuccess(data);
         searchCallback({ "data": data["statuses"]});

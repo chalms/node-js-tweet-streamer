@@ -16,11 +16,11 @@ module.exports = function (interval, limits, startValue, name) {
 
   var _this = this;
 
-  _this.abort = function (_this) {
+  _this.abort = function (_this, options) {
     log.aborting();
     _this.blocked = false;
     _this.aborted = true;
-    MongoClient.setRunning('current_data_aggregator', false, function (result) {
+    MongoClient.setRunning('current_data_aggregator', options, function (result) {
       console.log(result);
     });
   }
@@ -32,7 +32,7 @@ module.exports = function (interval, limits, startValue, name) {
     } else {
       log.intervalAdjustmentFailed();
       if (!_this.aborted) {
-        _this.abort(_this);
+        _this.abort(_this, { running: false, error: "" });
       }
     }
   };
@@ -79,24 +79,33 @@ module.exports = function (interval, limits, startValue, name) {
 
       QueryIssuer.issueQuery(queryParams, function (response) {
         log.issueQueryResponse(queryParams);
-
-        referenceThis.insertQuery(response["data"], queryParams, function (data){
-          log.issueQueryCallbackData(data);
-
-          MongoClient.insertAndReturnMong(data, _this.collectionName, referenceThis, function (number, ref) {
-            log.writeNumberAndCount(number, count);
-            if (number === null || number === undefined) {
-              ref.abort(ref);
+        if (result.hasOwnProperty("error")) {
+          if (result["error"].hasOwnProperty("statusCode")) {
+            if (result["error"]["statusCode"] === 429) {
+              ref.abort(ref, { running: false, error: "Rate limit exceeded! Wait an hour before querying again."})
             } else {
-              var diff = number - count;
-              if (diff === 0) {
-                ref.abort(ref);
-              } else {
-                callback(ref);
-              }
+              var message = result["error"]["message"];
+              ref.about(ref, { running: false, error: message});
             }
+          }
+        } else if (result.hasOwnProperty("data")) {
+          referenceThis.insertQuery(response["data"], queryParams, function (data){
+            log.issueQueryCallbackData(data);
+            MongoClient.insertAndReturnMong(data, _this.collectionName, referenceThis, function (number, ref) {
+              log.writeNumberAndCount(number, count);
+              if (number === null || number === undefined) {
+                ref.abort(ref, { running: false, error: "Something Went Wrong!" });
+              } else {
+                var diff = number - count;
+                if (diff === 0) {
+                  ref.abort(ref, { running: false, error: "" });
+                } else {
+                  callback(ref);
+                }
+              }
+            });
           });
-        });
+        }
       });
     });
   }
