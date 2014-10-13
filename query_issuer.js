@@ -23,7 +23,6 @@ exports.issueQuery = function (args, dataHandler) {
 
     },
     search: function (data) {
-
       var twitter = new TwitterStreamer(collectionName);
       var queryBuilder = new QueryBuilder();
       queryBuilder.buildSearch(data, function (searchParams) {

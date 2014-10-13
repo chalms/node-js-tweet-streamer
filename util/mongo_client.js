@@ -6,6 +6,7 @@ var request = require('request');
 var colors = require('colors');
 var Twit = require('twit');
 var config1 = require('./config1.js');
+var inspect = require('./inspect.js');
 
 exports.createCollection = function (db, collectionName, callback) {
   var collection;
@@ -426,6 +427,47 @@ exports.getCollectionView = function (callback) {
     });
   });
 }
+// <----- for websocket
+// exports.runQuery = function (data, callback) {
+//   // <--- to be implemented for web sockets
+//   var twit = new Twit(config1);
+//   mong.connect(url, function(err, db) {
+//     if (err) {
+//       callback({ error: "Mong connection error"});
+//     }
+//     if (!data.hasOwnProperty("query")) {
+//       callback({ error: "No query given!"});
+//     }
+
+//     var collection = db.collection(data["collection"]);
+//     twit.get('search/tweets', { "q": data["query"] } ), function (err, result) {
+//       if (err) {
+//         var error;
+//         if (err.hasOwnProperty("error")) {
+//           error = err["error"];
+//         } else {
+//           error = err;
+//         }
+//         if (error.hasOwnProperty("statusCode")) {
+//           if (error["statusCode"] === 429) {
+//             callback({error: "Tweet rate exceeded!"});
+//             return;
+//           }
+//         } else {
+//           callback({error: error["message"]});
+//           return;
+//         }
+//       } else {
+//         result["query"] = data["query"];
+//         // <---- status or whatever the fuck
+
+//         if (result.hasOwnProperty("status")) {
+//           callback({tweet_content: result["status"]})
+//         }
+//       }
+//     });
+
+// }
 
 exports.getDocumentCount = function (collectionName, bool, callback) {
   log.getDocumentCountStart(collectionName);
@@ -444,6 +486,131 @@ exports.getDocumentCount = function (collectionName, bool, callback) {
       _this.collection = db.collection(collectionName);
       _this.collection.count(function (err, count) {
         _this.callback(count);
+      });
+    }
+  });
+}
+
+exports.saveStockData = function (ticker, dataType, data) {
+  var ref = this;
+  mong.connect(url, function (err, db) {
+    if (err) {
+      console.log("ERROR CONNECTING TO MONGO".red);
+      console.log(err);
+      return ;
+    } else {
+
+      var collectionBuilder = {};
+      collectionBuilder['collection'] = 'finance';
+      collectionBuilder['indexes'] = {"ticker":1};
+      collectionBuilder['options'] = {unique: true};
+
+      if (!data.hasOwnProperty("date")) {
+        data["date"] = new Date();
+      }
+
+      var collection;
+
+      function getOrCreateCollection(db, builder, collection, callback) {
+        var collectionName = builder['collection'];
+        var indexes = builder['indexes'];
+        var options = builder['options'];
+
+        function getCollection(collectionName, miniCallback) {
+          try {
+            collection = db.collection(collectionName);
+            callback(null, collection);
+          } catch (err) {
+            console.log("DB.COLLECTION(FINANCE) CAUSED ERROR".red);
+            db.createCollection(collectionName);
+            collection = db.collection(collectionName);
+            miniCallback(err, collection);
+          }
+        }
+
+        getCollection(collectionName, function (err, collection) {
+          if (err) {
+            console.log("ensuring indexes!".green);
+            collection.ensureIndex(indexes, options, function (err, name) {
+              if (!err) {
+                console.log("No error ensuring indexes so calling back!".green);
+             //   console.log("Indexes below: ".cyan);
+             //   console.log(name);
+                callback(collection);
+              } else {
+                console.log("ERROR CREATING INDEX".red);
+              }
+            });
+          } else {
+            callback(collection);
+          }
+        });
+      }
+
+      function updateCollection(collection, item, command) {
+       // console.log(colors.green(inspect.inspect(item)));
+        collection.update(item, command, function (err, resp) {
+          if (err) {
+            console.log(colors.red(err));
+          } else {
+           // console.log(colors.green(resp));
+          }
+        });
+      }
+
+      function insertDocument(ticker, collection, dataType, data) {
+
+        var doc = {};
+        doc["ticker"] = ticker;
+        doc[dataType] = new Array();
+        doc[dataType].push(data);
+
+        console.log("About to insert document".green);
+      //  console.log(colors.blue(doc));
+
+        collection.insert(doc, {w:1}, function (err, resp) {
+          if (err) {
+            console.log(colors(err).red);
+          } else {
+          //  console.log(colors(resp).green);
+          }
+        });
+      }
+
+      function done() {
+        console.log("DONE!".green);
+      }
+
+      getOrCreateCollection(db, collectionBuilder, collection, function (collection) {
+
+        console.log("The second callback successful".green);
+
+        var cursor = collection.find({"ticker": ticker});
+       // inspect.inspect(cursor, function (result) {
+         // console.log(colors.green(result));
+       // });
+        var oneItem = false;
+
+        console.log("About to loop through the cursor".green);
+
+        cursor.nextObject(function (err, item) {
+          //console.log(item);
+          if (!oneItem) {
+            console.log("In the cursor loop!".green);
+            if ((item === null) || (item === undefined) || (err) || (item === "undefined")) {
+
+              console.log("Error or item is null".green);
+              insertDocument(ticker, collection, dataType, data);
+              oneItem = true;
+              done();
+            } else {
+              console.log("item was found so updating..".green);
+              updateCollection(collection, item, {$addToSet: { dataType : data }});
+              oneItem = true;
+              done();
+            }
+          }
+        });
       });
     }
   });

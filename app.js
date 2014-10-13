@@ -15,7 +15,10 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var errorHandler = require('errorhandler');
 var colors = require('colors');
+var WebSocket = require('ws');
+var inspect = require('./util/inspect');
 var app = express();
+
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', './views');
@@ -34,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(timeout(60000));
 app.use(haltOnTimedout);
 
+
 function haltOnTimedout(req, res, next) {
   if (!req.timedout) next();
 }
@@ -43,6 +47,22 @@ log.wipe();
 process.on('uncaughtException', function (err) {
   console.log('Caught exception: ' + err.stack);
   log.write(err.stack);
+});
+
+
+var servers = {
+  yahoo: require('./finance/yahoo.js')
+}
+
+app.get('/finance/:server/:id.json', function (req, res) {
+  servers[req.params.server].request(req.params.id, function (data) {
+    res.write(JSON.stringify(data));
+    res.end();
+  }, function (data) {
+    if (!data.hasOwnProperty("error")) {
+      MongoClient.saveStockData(req.params.id, "summary", data);
+    }
+  });
 });
 
 
@@ -74,16 +94,12 @@ app.post('/query.json', function (req, res) {
 });
 
 function launchDataAggregator(req, res, writeResponseFunct) {
-  console.log("calling set new query");
-  console.log(req.body);
   var collectionName = req.body.hasOwnProperty("collectionName") ? req.body["collectionName"] : 'GWPH_test' ;
   var query = req.body.hasOwnProperty("query") ? req.body["query"] : 'GWPH';
   MongoClient.setNewQuery('current_data_aggregator',
     collectionName,
     query,
     function (result, writeResponseFunct) {
-      console.log(result);
-      console.log("in mongo client callback");
       if (timers.hasOwnProperty('current_data_aggregator')) {
         timers['current_data_aggregator'].startJob(result["query"], result["collection"])
       } else {
@@ -95,6 +111,17 @@ function launchDataAggregator(req, res, writeResponseFunct) {
     writeResponseFunct
   );
 }
+
+
+// var WebSocketServer = WebSocket.Server, wss = new WebSocketServer({port: app.get('port')});
+// wss.on('connection', function(webS) {
+//   webS.on('message', function(message) {
+//     MongoClient.runQuery(message, function (result) {
+//       webS.send(JSON.stringify(result));
+//     });
+//   });
+// });
+
 
 app.post('/user_info.json', function (req, res) {
   try {
