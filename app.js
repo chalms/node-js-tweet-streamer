@@ -17,8 +17,9 @@ var errorHandler = require('errorhandler');
 var colors = require('colors');
 var WebSocket = require('ws');
 var inspect = require('./util/inspect');
+var js2xmlparser = require("js2xmlparser");
+var jade = require("jade");
 var app = express();
-
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', './views');
@@ -51,16 +52,180 @@ process.on('uncaughtException', function (err) {
 
 
 var servers = {
-  yahoo: require('./finance/yahoo.js')
+  yahoo: require('./finance/yahoo.js'),
+  quandl: require('./finance/quandl.js')
 }
 
-app.get('/finance/:server/:id.json', function (req, res) {
-  servers[req.params.server].request(req.params.id, function (data) {
-    res.write(JSON.stringify(data));
-    res.end();
+var formatter = {
+  html: function (data, callback) {
+    var fn = jade.compileFile('./views/table.jade', {});
+    var html = fn({data: data});
+    callback(html);
+  },
+
+  csv: function (data, callback) {
+
+    console.log("IN CSV FUNCTION".red);
+    console.log(data);
+
+    var str = "";
+    var keySet = [];
+
+    for (var k in data) {
+      keySet.push(k);
+    }
+
+    console.log("KEY SET".red);
+    console.log(keySet);
+    try {
+      function runLoop(key) {
+        console.log("RUN LOOP");
+        console.log(key);
+        var j = data[key];
+        if (typeof j === 'object') {
+          inspect.inspect(j, function (d) {
+            if (key[key.length-1] === ':') {
+              key = key.substring(0, key.length - 1);
+            }
+            str = str + key + " , " + d + "\n";
+            if (keySet.length > 0) {
+              runLoop(keySet.pop());
+            } else {
+              console.log(keySet.length);
+              callback(str);
+            }
+          });
+        } else {
+          if (key[key.length-1] === ':') {
+            key = key.substring(0, key.length - 1);
+          }
+          str = str + key + " , " + j + "\n";
+          if (keySet.length > 0) {
+            runLoop(keySet.pop());
+          } else {
+            console.log(keySet.length);
+            callback(str);
+          }
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    if (keySet.length > 0) {
+      var key = keySet.pop();
+      console.log("RUNNING RUN LOOP".red);
+      console.log(key);
+      runLoop(key);
+    }
+  },
+  text: function (data, callback) {
+    callback(JSON.stringify(data));
+  },
+  json: function (data, callback) {
+    callback(JSON.stringify(data));
+  },
+  xml: function (data, callback) {
+    function runLoop(data, callback) {
+      var keySet = [];
+      var keys = {};
+      for (var k in data) {
+        keySet.push(k);
+      }
+
+      while (keySet.length > 0) {
+        var key = keySet[0];
+        var firstKey = keySet[0];
+        var value = data[firstKey];
+        var index = keySet.indexOf(firstKey);
+
+        delete data[key];
+
+        console.log(colors.cyan(key));
+        key = firstKey.replace(/[\W_]+/g,"");
+
+
+        console.log(colors.cyan(key));
+        console.log(colors.cyan(key));
+
+        if (value === 'object') {
+          runLoop(value, function (result) {
+            data[key] = result;
+            keySet.splice(index, 1);
+            if (keySet.length === 0) {
+              callback(data);
+            }
+          });
+        } else {
+          data[key] = value;
+          keySet.splice(index, 1);
+          if (keySet.length === 0) {
+            callback(data);
+          }
+        }
+      }
+    }
+    runLoop(data, function (result) {
+      callback(js2xmlparser("doc", result));
+    })
+  }
+}
+app.post('/finance/:server/:job/:ticker', function (req, res) {
+  var request_args = {
+    server: req.body.server,
+    job: req.body.job,
+    ticker: req.body.ticker.split('.')[0]
+  }
+  delete req.body['server'];
+  delete req.body['job'];
+  delete req.body['ticker'];
+  var str = req.url.split(/[\/\.]+/)[5];
+  servers[request_args['server']].request(request_args, function (data) {
+    if (str !== null) {
+      if (formatter.hasOwnProperty(str)) {
+        formatter[str](data, function (result) {
+          res.write(result);
+          res.end();
+        });
+      } else {
+        console.log("FORMATTER DOES NOT HAVE X".cyan);
+        formatter["html"](data, function (result) {
+            res.write(result);
+            res.end();
+        });
+      }
+    }
   }, function (data) {
     if (!data.hasOwnProperty("error")) {
-      MongoClient.saveStockData(req.params.id, "summary", data);
+      MongoClient.saveStockData(req.params.id, req.params.job, data);
+    }
+  });
+});
+
+app.get('/finance/:server/:job/:ticker', function (req, res) {
+  var request_args = {
+    server: req.params.server,
+    job: req.params.job,
+    ticker: req.params.ticker.split('.')[0]
+  }
+  var str = req.url.split(/[\/\.]+/)[5];
+  servers[request_args['server']].request(request_args, function (data) {
+    if (str !== null) {
+      if (formatter.hasOwnProperty(str)) {
+        formatter[str](data, function (result) {
+          res.write(result);
+          res.end();
+        });
+      } else {
+        console.log("FORMATTER DOES NOT HAVE X".cyan);
+        formatter["html"](data, function (result) {
+            res.write(result);
+            res.end();
+        });
+      }
+    }
+  }, function (data) {
+    if (!data.hasOwnProperty("error")) {
+      MongoClient.saveStockData(req.params.id, req.params.job, data);
     }
   });
 });

@@ -1,0 +1,12 @@
+table.table-striped
+  thead
+  tbody
+    - for(var row in data)
+      tr
+        td
+          h5
+            = row
+        td
+          h6
+            = data[row]
+  tfooter
