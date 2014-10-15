@@ -427,47 +427,6 @@ exports.getCollectionView = function (callback) {
     });
   });
 }
-// <----- for websocket
-// exports.runQuery = function (data, callback) {
-//   // <--- to be implemented for web sockets
-//   var twit = new Twit(config1);
-//   mong.connect(url, function(err, db) {
-//     if (err) {
-//       callback({ error: "Mong connection error"});
-//     }
-//     if (!data.hasOwnProperty("query")) {
-//       callback({ error: "No query given!"});
-//     }
-
-//     var collection = db.collection(data["collection"]);
-//     twit.get('search/tweets', { "q": data["query"] } ), function (err, result) {
-//       if (err) {
-//         var error;
-//         if (err.hasOwnProperty("error")) {
-//           error = err["error"];
-//         } else {
-//           error = err;
-//         }
-//         if (error.hasOwnProperty("statusCode")) {
-//           if (error["statusCode"] === 429) {
-//             callback({error: "Tweet rate exceeded!"});
-//             return;
-//           }
-//         } else {
-//           callback({error: error["message"]});
-//           return;
-//         }
-//       } else {
-//         result["query"] = data["query"];
-//         // <---- status or whatever the fuck
-
-//         if (result.hasOwnProperty("status")) {
-//           callback({tweet_content: result["status"]})
-//         }
-//       }
-//     });
-
-// }
 
 exports.getDocumentCount = function (collectionName, bool, callback) {
   log.getDocumentCountStart(collectionName);

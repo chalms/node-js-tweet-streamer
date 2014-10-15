@@ -7,13 +7,13 @@ Record = require('./util/record.js');
 exports.show = function (requestedData, collection, dataCallback) {
   _this = this;
   _this.collection = collection;
-  _this.dataCallback = dataCallback; 
+  _this.dataCallback = dataCallback;
   _this.T = new Twit(config);
   _this.T.get('users/show', requestedData, function(err, data, response) {
     if (!err) {
-      dataCallback({"data": data}); 
+      dataCallback({"data": data});
     } else {
-      dataCallback({"error": err}); 
+      dataCallback({"error": err});
     }
   });
 }
