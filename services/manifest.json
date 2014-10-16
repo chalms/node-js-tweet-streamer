@@ -1,0 +1,6 @@
+{
+  "servers": [
+    { "yahoo": ["historical", "summary"] },
+    { "twitter": ["search", "stream", "historical"] }
+  ]
+}

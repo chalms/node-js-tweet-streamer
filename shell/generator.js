@@ -1,7 +1,19 @@
 require('shelljs/global');
 var colors = require('colors');
 var arguments = process.argv.slice(2);
-
+var funct = arguments[0];
+var service = arguments[1];
+service = service.split("+");
+var serviceName = service[0];
+var jobList, jobs;
+if (service.length > 1) {
+  jobList = service[1];
+  jobs = jobList.split(":");
+  console.log(jobs);
+} else {
+  jobList = null;
+  jobs = null;
+}
 
 var generator = function (nameOfModule) {
   console.log(arguments);
@@ -18,7 +30,6 @@ var generator = function (nameOfModule) {
     exit(1);
   } else {
     console.log("Success!".green);
-    this.createRouter();
   }
 }
 
@@ -32,8 +43,8 @@ var destroyer = function (nameOfModule) {
 }
 
 functions = {
-  g: generator,
-  d: destroyer
+  '-g': generator,
+  '-d': destroyer
 }
 
 try {
