@@ -21,6 +21,7 @@
     "finish": "0.6.2",
     "jade": "^1.7.0",
     "jasmine-node": "1.14.5",
+    "jsonfile": "^2.0.0",
     "method-override": "^2.2.0",
     "mongodb": "^1.4.7",
     "mongoose": "3.8.12",

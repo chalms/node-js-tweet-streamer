@@ -18,8 +18,8 @@ var errorHandler = require('errorhandler');
 var colors = require('colors');
 var WebSocket = require('ws');
 var inspect = require('./util/inspect');
-var js2xmlparser = require("js2xmlparser");
 var jade = require("jade");
+var jf = require('jsonfile')
 var app = express();
 
 app.set('port', process.env.PORT || 3000);
@@ -52,113 +52,12 @@ process.on('uncaughtException', function (err) {
 });
 
 
-var servers = {
-  yahoo: require('./finance/yahoo.js'),
-  quandl: require('./finance/quandl.js')
-}
+var serverRoute = './services/manifest.json'
+var manifest = jf.readFileSync(serverRoute));
 
-var formatter = {
-  html: function (data, callback) {
-    var fn = jade.compileFile('./views/table.jade', {});
-    var html = fn({data: data});
-    callback(html);
-  },
+var formatter =
 
-  csv: function (data, callback) {
-
-    console.log("IN CSV FUNCTION".red);
-
-    var str = "";
-    var keySet = [];
-    for (var k in data) keySet.push(k);
-
-    try {
-      function runLoop(key) {
-
-        console.log("RUN LOOP");
-        var j = data[key];
-
-        function addStr(d, key) {
-          if (key[key.length-1] === ':') {
-            key = key.substring(0, key.length - 1);
-          }
-
-          str = str + key + " , " + d + "\n";
-
-          if (keySet.length > 0) {
-            runLoop(keySet.pop());
-          } else {
-            console.log(keySet.length);
-            callback(str);
-          }
-        }
-        (typeof j === 'object') {
-          inspect.inspect(j, function (d) {
-            addStr(d, key);
-          });
-        } else {
-          addStr(j, k);
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    if (keySet.length > 0) {
-      var key = keySet.pop();
-      console.log("RUNNING RUN LOOP".red);
-      runLoop(key);
-    }
-  },
-  text: function (data, callback) {
-    callback(JSON.stringify(data));
-  },
-  json: function (data, callback) {
-    callback(JSON.stringify(data));
-  },
-  xml: function (data, callback) {
-
-    function runLoop(data, callback) {
-
-      var keySet = [];
-      var keys = {};
-      for (var k in data) {
-        keySet.push(k);
-      }
-
-      while (keySet.length > 0) {
-
-        var key = keySet[0];
-        var firstKey = keySet[0];
-        var value = data[firstKey];
-        var index = keySet.indexOf(firstKey);
-
-        delete data[key];
-
-        key = firstKey.replace(/[\W_]+/g,"");
-
-        function removeKeyFromSet(result, index, cb) {
-          data[key] = result;
-          keySet.splice(index, 1);
-          if (keySet.length === 0) callback(data);
-        }
-
-        if (value === 'object') {
-          runLoop(value, function (result) {
-            removeKeyFromSet(result, index, function () {});
-          });
-        } else {
-          removeKeyFromSet(result, index, function () {});
-        }
-      }
-    }
-
-    runLoop(data, function (result) {
-      callback(js2xmlparser("doc", result));
-    });
-  }
-}
-
-app.post('/:server/:job/:args', function (req, res) {
+app.post('services/:server/:job/:args', function (req, res) {
 
   var request_args = {
     server: req.body.server,
@@ -191,7 +90,7 @@ app.post('/:server/:job/:args', function (req, res) {
   });
 });
 
-app.get('/:server/:job/:args', function (req, res) {
+app.get('services/:server/:job/:args', function (req, res) {
 
   var request_args = {
     server: req.params.server,
@@ -222,69 +121,6 @@ app.get('/:server/:job/:args', function (req, res) {
 });
 
 
-var timers = {};
-// twitter query builder ---->
-app.post('/query.json', function (req, res) {
-  log.requestBody(req);
-  var args = req.body;
-  QueryIssuer.issueQuery(args, function (response) {
-    log.queryResponse(response);
-    if (typeof response === 'object') {
-      if (response.hasOwnProperty("data")) {
-        MongoClient.insertToDatabase(response["data"], args["collection"], function (messageToClient) {
-          res.write(JSON.stringify(messageToClient));
-          res.end();
-        });
-      } else if (response.hasOwnProperty("error")) {
-        log.queryError(response["error"]);
-        res.write(JSON.stringify({ "status":400}));
-        res.end();
-      } else if (response.hasOwnProperty("status")) {
-        res.write(JSON.stringify({ "status": response["status"] }));
-        res.end();
-      } else { log.responseHadWrongKeys(response);  }
-    } else {
-      log.responseNotObject(response);
-    }
-  });
-});
-
-
-app.post('/user_info.json', function (req, res) {
-  try {
-    var collectionName = req.body["collection"];
-    MongoClient.loadUserDataForTweetCollection(collectionName, function (err, done) {
-      if (err === null) {
-        res.write(JSON.stringify({status: 200, count: done}));
-        res.end();
-      } else {
-        res.write(JSON.stringify({status: 400, error: err}));
-        res.end();
-      }
-    });
-  } catch (err) {
-    res.write(JSON.stringify({status: 400, error: err}));
-    res.end();
-    return;
-  }
-});
-
-// // main documentation (http server) --->
-app.get('/current_timer.json', function (req, res) {
-  MongoClient.getElement('data_bots', 'current_data_aggregator', function (item) {
-    res.write(JSON.stringify(item));
-    res.end();
-  });
-});
-
-app.post('/current_timer.json', function (req, res) {
-  MongoClient.setRunning('current_data_aggregator', true, function (result) {
-    result["status"] = 200;
-    res.write(JSON.stringify(result));
-    res.end();
-    launchDataAggregator(req, res, function (result) {});
-  });
-});
 
 var content;
 // First I want to read the file
