@@ -1,223 +1,90 @@
 extends layout
-
+block routes
 block content
-  - for (var key in routes)
-    - if (typeof key !== 'object')
-      script(type="text/html", id="#{key}")
+  body
+    #layout.pure-g
+      .sidebar.pure-u-1.pure-u-md-1-4
+        .header
+          h1.brand-title A Sample Blog
+          h2.brand-tagline Creating a blog layout using Pure
+          nav.nav
+            ul.nav-list
+              li.nav-item
+                a.pure-button(href='http://purecss.io') Pure
+              li.nav-item
+                a.pure-button(href='http://yuilibrary.com') YUI Library
+      .content.pure-u-1.pure-u-md-3-4
         div
-          = key
-  div.navbar.navbar-fixed-top
-    div.navbar-inner
-      div.container
-        a.btn.btn-navbar(data-toggle="collapse", data-target=".nav-collapse")
-          span.icon-bar
-          span.icon-bar
-          span.icon-bar
-        a.brand(href="#") Encore Auto Finance
-          div.nav-collapse.collapse
-            ul.nav(id="nav-item-container")
-  div.container(id="container")
-  script(type='text/javascript', src='/vendor/underscore.js')
-  script(type='text/javascript', src='/vendor/backbone.js')
-
-  //- div.form(id="user-info")
-  //-   h3 Collect User Info
-  //-   div.form-group
-  //-     label From Collection:
-  //-     input.form-control(id="collectionName", type="text", name="collectionName", value="")
-  //-     button.btn.btn-primary(id="user_info_button") Submit
-  //-   script.
-  //-     $(document).ready(function () {
-  //-       $("#user_info_button").click(function () {
-  //-         var userData = {};
-  //-         userData["collection"] = $("#collectionName")[0].value;
-  //-         $.ajax({
-  //-           url: '/user_info.json',
-  //-           type: 'post',
-  //-           data: userData,
-  //-           success: function (data) {
-  //-             var data = JSON.parse(data);
-  //-             var html = $.parseHTML("<p> Records in User Database:  " + data.count + "</p>");
-  //-             $('#user-info').prepend(html);
-  //-           }, error: function (err) {
-  //-             var html = $.parseHTML("<p> Error! " + err + "</p>");
-  //-             $('#user-info').prepend(html);
-  //-           }
-  //-         });
-  //-       });
-  //-     });
-  //- div.well(id="data-stream", style="display: hidden;")
-  //-   table
-  //-     tbody
-  //-       tr
-  //-         th Collection
-  //-         th Query
-  //-         th Count
-  //-       tr
-  //-         td(id="dataStreamCollection")
-  //-         td(id="dataStremQuery")
-  //-         td(id="dataStreamCount")
-  //-     tfooter
-  //-       h4(id="last-tweet")
-  //- div.form(id="current_data_bot", hidden="true");
-  //-   h3
-  //-     lead Add Current Data
-  //-   script.
-  //-     if ('#{query}' === undefined) {
-  //-      '#{query = "GWPH"}'
-  //-     }
-  //-     if ('#{collection}' === undefined) {
-  //-       '#{collection = "GWPH_test"}'
-  //-     }
-  //-   div.form-group
-  //-     label Collection
-  //-     input.form-control(id="collection", type="text", name="collection", value="#{collection}")
-  //-   div.form-group
-  //-     label Query
-  //-     input.form-control(id="query", type="text", name="query", value="#{query}")
-  //-   button.btn.btn-primary(id="current_data_bot_button") Submit
-  //-   script.
-  //-     $(document).ready(function () {
-  //-       $("#current_data_bot_button").click(function () {
-  //-         var form = $("#current_data_bot input");
-  //-         var d = {};
-  //-         d["collectionName"] = $("#collection")[0].value;
-  //-         d["query"] = $("#query")[0].value;
-  //-         var queues = {};
-  //-         var unlocked = true;
-  //-         function streamQueue() {
-  //-           if ((queues["collection"].length > 0) && unlocked) {
-  //-             unlocked = false;
-  //-             $("dataStreamCollection").fadeOut("fast", function () {
-  //-               $("dataStreamCollection").val(queue.pop());
-  //-               $("dataStreamCollection").fadeIn("fast", function () {
-  //-                 unlocked = true;
-  //-                 streamQueue();
-  //-               });
-  //-             });
-  //-           }
-  //-         }
-  //-         //- function launchWebSocket(d) {
-  //-         //-   var ws = new WebSocket('ws://localhost:3000/');
-  //-         //-   var dataString = JSON.stringify(d);
-  //-         //-   ws.on('open', function() {
-  //-         //-       ws.send(d);
-  //-         //-   });
-  //-         //-   ws.on('message', function(data, flags) {
-  //-         //-     var dataObj = JSON.parse(data);
-  //-         //-     if (dataObj.hasOwnProperty("collection")) {
-  //-         //-       if (queues["collection"] === null) queues["collection"] = [];
-  //-         //-         queues["collection"].push(dataObj["collection"]);
-  //-         //-         streamQueue();
-  //-         //-       }
-  //-         //-     }
-  //-         //-   });
-  //-         //- }
-
-  //-         function launchAjax(d) {
-  //-           var $el = $("#current_data_bot");
-  //-           var oldHtml = $("#current_data_bot").html();
-  //-           $el.waiting({
-  //-             className: 'waiting-circles',
-  //-             elements: 8,
-  //-             radius: 20,
-  //-             auto: true
-  //-           });
-  //-           $el.waiting('play');
-  //-           var error_count = 0;
-  //-           function timerFunction () {
-  //-             var timerId;
-  //-             $.ajax({
-  //-               url: '/current_timer.json',
-  //-               type: 'get',
-  //-               success: function (data) {
-  //-                 error_count = 0;
-  //-                 console.log(data);
-  //-                 var f = JSON.parse(data);
-  //-                 console.log(f);
-  //-                 if (f === null) {
-  //-                   timerId = setTimeout(timerFunction, 500);
-  //-                   return;
-  //-                 }
-  //-                 var bool = f["running"];
-  //-                 console.log("testing bool");
-  //-                 console.log(bool);
-  //-                 if (bool) {
-  //-                   timerId = setTimeout(timerFunction, 500);
-  //-                 } else {
-  //-                   $el.waiting('disable');
-  //-                   $el.waiting('destroy');
-  //-                   $el.html(oldHtml);
-  //-                   node = $.parseHTML('<h4> Collection: ' + d["collectionName"] + '</h4><h5> Query: ' + d["query"] +' </h5>');
-  //-                   $el.prepend(node);
-  //-                   clearTimeout(timerId);
-  //-                   // done!
-  //-                 }
-  //-               },
-  //-               error: function (err) {
-  //-                 error_count += 1;
-  //-                 console.log(err);
-  //-                 if (error_count > 5) {
-  //-                   clearTimeout(timerId);
-  //-                   $el.waiting('disable');
-  //-                   $el.waiting('destroy');
-  //-                   $el.html(oldHtml);
-  //-                   node = $.parseHTML('<p> An error has occured. Refresh and try again.</p>');
-  //-                   console.log(node);
-  //-                   $el.prepend(node);
-  //-                 } else {
-  //-                   timerId = setTimeout(timerFunction, 500);
-  //-                 }
-  //-               }
-  //-             });
-  //-           }
-  //-           $.ajax({
-  //-             url: '/current_timer.json',
-  //-             type: 'post',
-  //-             data: d,
-  //-             success: function (data) {
-  //-               console.log(data);
-  //-               var g = JSON.parse(data);
-  //-               console.log(g);
-  //-               var c = g["running"];
-  //-               console.log(g["running"]);
-  //-               if (c) {
-  //-                 timerFunction();
-  //-               } else {
-  //-                 console.log("not running?");
-  //-               }
-  //-             },
-  //-             error: function (err) {
-  //-               console.log(data);
-  //-               timerFunction();
-  //-             }
-  //-           });
-  //-         }
-  //-         launchAjax(d);
-  //-       });
-  //-     });
-  //- div(id="collections")
-  //-   table.table.table-hover(style = "margin-top: 20px;")
-  //-     tbody
-  //-       tr.row
-  //-         th
-  //-           = "Name"
-  //-         th
-  //-           = "Number of Documents"
-  //-         th
-  //-           = "Indexes"
-  //-       - for (var i in collections)
-  //-         tr.row
-  //-           td
-  //-             a.collection-link
-  //-               = collections[i]['name']
-  //-           td
-  //-             = collections[i]['count']
-  //-           td
-  //-             - test = true
-  //-             - for (var key in collections[i]['indexes'])
-  //-               - if (test)
-  //-                 = collections[i]['indexes'][key][0][0]
-  //-                 - test = false
-  //-               - else
-  //-                 = ", " + collections[i]['indexes'][key][0][0]
+          .posts
+            h1.content-subhead Pinned Post
+            section.post
+              header.post-header
+                img.post-avatar(alt='Tilo Mitra\'s avatar', height='48', width='48', src='img/common/tilo-avatar.png')
+                h2.post-title Introducing Pure
+                p.post-meta
+                  | By
+                  a.post-author(href='#') Tilo Mitra
+                  | under
+                  a.post-category.post-category-design(href='#') CSS
+                  a.post-category.post-category-pure(href='#') Pure
+              .post-description
+                p
+                  | Yesterday at CSSConf, we launched Pure – a new CSS library. Phew! Here are the
+                  a(href='https://speakerdeck.com/tilomitra/pure-bliss') slides from the presentation
+                  | . Although it looks pretty minimalist, we’ve been working on Pure for several months. After many iterations, we have released Pure as a set of small, responsive, CSS modules that you can use in every web project.
+          .posts
+            h1.content-subhead Recent Posts
+            section.post
+              header.post-header
+                img.post-avatar(alt='Eric Ferraiuolo\'s avatar', height='48', width='48', src='img/common/ericf-avatar.png')
+                h2.post-title Everything You Need to Know About Grunt
+                p.post-meta
+                  | By
+                  a.post-author(href='#') Eric Ferraiuolo
+                  | under
+                  a.post-category.post-category-js(href='#') JavaScript
+              .post-description
+                p
+                  | Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            section.post
+              header.post-header
+                img.post-avatar(alt='Reid Burke\'s avatar', height='48', width='48', src='img/common/reid-avatar.png')
+                h2.post-title Photos from CSSConf and JSConf
+                p.post-meta
+                  | By
+                  a.post-author(href='#') Reid Burke
+                  | under
+                  a.post-category(href='#') Uncategorized
+              .post-description
+                .post-images.pure-g
+                  .pure-u-1.pure-u-md-1-2
+                    a(href='http://www.flickr.com/photos/uberlife/8915936174/')
+                      img.pure-img-responsive(alt='Photo of someone working poolside at a resort', src='http://farm8.staticflickr.com/7448/8915936174_8d54ec76c6.jpg')
+                    .post-image-meta
+                      h3 CSSConf Photos
+                  .pure-u-1.pure-u-md-1-2
+                    a(href='http://www.flickr.com/photos/uberlife/8907351301/')
+                      img.pure-img-responsive(alt='Photo of the sunset on the beach', src='http://farm8.staticflickr.com/7382/8907351301_bd7460cffb.jpg')
+                    .post-image-meta
+                      h3 JSConf Photos
+            section.post
+              header.post-header
+                img.post-avatar(alt='Andrew Wooldridge\'s avatar', height='48', width='48', src='img/common/andrew-avatar.png')
+                h2.post-title YUI 3.10.2 Released
+                p.post-meta
+                  | By
+                  a.post-author(href='#') Andrew Wooldridge
+                  | under
+                  a.post-category.post-category-yui(href='#') YUI
+              .post-description
+                p
+                  | We are happy to announce the release of YUI 3.10.2! You can find it now on the Yahoo! CDN, download it directly, or pull it in via npm. We’ve also updated the YUI Library website with the latest documentation.
+          .footer
+            .pure-menu.pure-menu-horizontal.pure-menu-open
+              ul
+                li
+                  a(href='http://purecss.io/') About
+                li
+                  a(href='http://twitter.com/yuilibrary/') Twitter
+                li
+                  a(href='http://github.com/yahoo/pure/') GitHub

@@ -1,6 +1,4 @@
-
-
-exports.funct = function(args, sendCallback, saveCallback) {
+module.exports = function(args, sendCallback, saveCallback) {
     var format;
 
     if (args["format"] === null) {

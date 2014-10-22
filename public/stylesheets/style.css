@@ -1,4 +1,4 @@
-
+/*
 html {
     font-size: 100%;
     overflow-y: scroll;
@@ -26,7 +26,6 @@ body {
 .waiting-circles-play-0{ background-color: #9EC45F; }
 .waiting-circles-play-1{ background-color: #aEd46F; }
 .waiting-circles-play-2{ background-color: #bEe47F; }
-/* Navbar */
 
 .nav ul {
   list-style: none;
@@ -72,7 +71,6 @@ body {
     background-color: #dcdcdc;
 }
 
-/* Links */
 a {
     color: #06d;
     text-decoration: none;
@@ -159,12 +157,10 @@ abbr {
     cursor: pointer;
 }
 
-/* Paragraphs */
 p {
     margin: 1em 0;
 }
 
-/* Images */
 img {
     max-width: 100%;
     border: 0;
@@ -172,7 +168,6 @@ img {
     vertical-align: middle;
 }
 
-/* Headers */
 h1,h2,h3,h4,h5,h6 {
     font-weight: normal;
     color: #111;
@@ -211,7 +206,6 @@ h6 {
     font-size: 0.9em;
 }
 
-/* Block Quotes */
 blockquote {
     color: #666666;
     margin: 0;
@@ -229,7 +223,6 @@ hr {
     padding: 0;
 }
 
-/* Raw Blocks */
 pre, code, kbd, samp {
     color: #000;
     font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
@@ -255,7 +248,6 @@ pre code {
     padding: 0;
 }
 
-/* Admonition */
 .admonition {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -304,7 +296,6 @@ pre code {
     border: 1px solid #888888;
 }
 
-/* Inlines */
 b, strong {
     font-weight: bold;
 }
@@ -341,7 +332,6 @@ dfn {
     font-style: italic;
 }
 
-/* Lists */
 ul, ol {
     padding-left: 30px;
 }
@@ -369,7 +359,6 @@ dd {
     margin: 0 0 0 2em;
 }
 
-/* Tables */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -391,7 +380,6 @@ td, th {
     padding: 6px 13px;
 }
 
-/* Codehilite Tables */
 .codehilitetable {
     border: 0;
     border-spacing: 0;
@@ -443,7 +431,6 @@ td:not(.linenos) .linenodiv {
     border-bottom-right-radius: 3px;
 }
 
-/* Media */
 @media only screen and (min-width: 480px) {
     body {
         font-size: 14px;
@@ -512,4 +499,4 @@ td:not(.linenos) .linenodiv {
     h2, h3 {
         page-break-after: avoid;
     }
-}
+}*/

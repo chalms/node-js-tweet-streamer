@@ -1,5 +1,4 @@
 //This is the Backbone controller that manages the content of the app
-
 function launch(routeList) {
     function buildContentList(contentList, callback) {
         for (var key in contentList) {

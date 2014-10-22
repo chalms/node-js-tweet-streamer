@@ -1,6 +1,5 @@
-var mong = require('mongodb').MongoClient;
+
 var log = require('./log.js');
-var url = "mongodb://Andrew:twitter@ds053469.mongolab.com:53469/tweets";
 var finish = require('finish');
 var request = require('request');
 var colors = require('colors');

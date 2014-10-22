@@ -1,6 +1,7 @@
 extends layout
 
 block content
+
   div(id="preview")
   textarea(id="text-input", oninput="this.editor.update()", rows="200", cols="100")
     = markdown_text
@@ -16,4 +17,14 @@ block content
       }
       var $ = function (id) { return document.getElementById(id); };
       new Editor($("text-input"), $("preview"));
+    });
+  button(id="#editMarkdown")
+  script.
+    $(document).read(function() {
+      $('#editMarkdown').click(function () {
+        //- $.ajax({
+        //-   url: '/blog/edit/' + sessionStorage.get(,
+
+        //- })
+      });
     });
