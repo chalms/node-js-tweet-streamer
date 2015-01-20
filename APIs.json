@@ -1,0 +1,63 @@
+{
+  "Developer Tools": {
+    "Testing": {
+      "Random User Generator": "http://randomuser.me/"
+    },
+    "Crypto Tools": {
+      "HDB": "https://www.mashape.com/thejaydox/tdm-hdb",
+      "SSH Honeypot": "https://www.mashape.com/joshrendek/ssh-honeypot"
+    },
+    "DNS/IP Tools": {
+      "Socks and Proxy Checker": "https://www.mashape.com/proxydr/socks-4-5-and-proxy-checker",
+      "Proxy Web Requests": "https://www.mashape.com/laiello/proxy-web-requests",
+      "DNS": "http://www.statdns.com/"
+    },
+    "Formatting and Content Creation": {
+      "Format Conversion": "https://cloudconvert.org/",
+      "Video Cut Detection": "https://www.mashape.com/semamediadata/video-hard-cut-detection",
+      "Web Merge Document Creator": "https://www.mashape.com/webmerge/webmerge"
+    }
+  },
+  "User Analytics": {
+    "Google Analytics": "https://developers.google.com/analytics/",
+    "User IP": "http://www.telize.com/",
+    "Graphdive": "https://www.mashape.com/community/graphdive"
+  },
+  "Finance": {
+    "Currency Convertor": "https://www.mashape.com/warting/currency-converter",
+    "Stock Twits": "https://www.mashape.com/stocktwits/stocktwits",
+    "Finance Articles": "https://www.mashape.com/quannabe/financial-articles-by-ticker",
+    "Stockviz - Financial Data": "https://www.mashape.com/drona/stockviz",
+    "Stock Market Text Sentiment": "https://www.mashape.com/quannabe/stock-market-text-sentiment",
+    "SEC Filings": "https://www.mashape.com/marketbrief/sec-filings"
+  },
+  "Data Sets": {
+    "Countries": "https://www.mashape.com/fayder/rest-countries-v1",
+    "Products": "https://www.mashape.com/semanticsthree/semantics3-products-data",
+    "Census Bureau": "https://www.mashape.com/community/census-bureau",
+    "Food Facts": "https://www.mashape.com/glennbech/food-facts",
+    "People in Jail": "https://www.mashape.com/jailbase/jailbase",
+    "Random Famous Quotes": "https://www.mashape.com/andruxnet/random-famous-quotes",
+    "NASA's Data set": "https://www.mashape.com/ismaelc/data-nasa",
+    "Phone Number Data Set": "https://www.mashape.com/nextcaller/next-caller"
+  },
+  "Data Tools": {
+    "RainHawk Data Manipulator": "https://www.mashape.com/sneeza/project-rainhawk",
+    "Text Analysis": {
+      "Text Mining & Sematic Reasoning": "https://www.mashape.com/expertsystem/cogito-intelligence-api",
+      "Shorticle": "https://www.mashape.com/nguru/shorticle",
+      "Summarization Index": "https://www.mashape.com/enelyou/summarization-index-summary-part-of-speech",
+      "Text Content From Images": "https://www.mashape.com/semamediadata/image-ocr"
+    },
+    "Machine Learning": {
+      "Datumbox": "https://www.mashape.com/community/datumbox"
+    },
+    "Scrapers": {
+      "Site-Scraper": "https://www.mashape.com/fyhao/site-scraper",
+      "Crawlera": "https://www.mashape.com/scrapinghub/crawlera"
+    },
+    "Analytics": {
+      "Amplitude": "https://www.mashape.com/community/amplitude"
+    }
+  }
+}

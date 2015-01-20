@@ -7,12 +7,12 @@ var log = require('./util/log.js');
 module.exports = function (interval, limits, startValue, name) {
   this.name = name;
   this.blocked = false;
-  this.args = {
-    "search": {
-      "q": 'GWPH'
-    },
-    "collection":'GWPH_test'
-  }
+  // this.args = {
+  //   "search": {
+  //     "q": 'GWPH'
+  //   },
+  //   "collection":'GWPH_test'
+  // }
 
   var _this = this;
 
@@ -20,7 +20,7 @@ module.exports = function (interval, limits, startValue, name) {
     log.aborting();
     _this.blocked = false;
     _this.aborted = true;
-    MongoClient.setRunning('current_data_aggregator', options, function (result) {
+    MongoClient.setRunning('', options, function (result) {
       console.log(result);
     });
   }
@@ -66,7 +66,6 @@ module.exports = function (interval, limits, startValue, name) {
     var setNewIntervalFunct = _this.setNewInterval;
     var referenceThis = _this;
     var bool = _this.firstRun;
-
 
     MongoClient.getDocumentCount(_this.collectionName, bool, function (c) {
       var count = c;

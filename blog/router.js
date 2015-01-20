@@ -1,6 +1,9 @@
 var router = require('express').Router();
+var mongo = require('mongodb').MongoClient;
 
-var collection = mongo.connectSync(function (db) { return db.collection('articles'); } );
+var url = "mongodb://Andrew:twitter@ds053469.mongolab.com:53469/tweets";
+var collection;
+mongo.connect(url, function (err, db) { collection = db.collection('articles').toArray() } );
 
 router.get('/', function(req, res, next) {
   res.render('index', collection, function (err, html) {

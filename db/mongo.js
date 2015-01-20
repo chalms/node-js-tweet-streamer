@@ -1,11 +1,11 @@
 
-var log = require('./log.js');
+var log = require('../util/log.js');
 var finish = require('finish');
 var request = require('request');
 var colors = require('colors');
 var Twit = require('twit');
-var config1 = require('./config1.js');
-var inspect = require('./inspect.js');
+var config1 = require('../util/config1.js');
+var inspect = require('../util/inspect.js');
 
 exports.createCollection = function (db, collectionName, callback) {
   var collection;
@@ -179,6 +179,7 @@ exports.loadUserDataForTweetCollection = function (collectionName, callback) {
         }
       });
     };
+
     _ref.createUserDatabase(db, 'user_info_test', function (col) {
       _ref.collection = col;
       cursor = statusCollection.find();

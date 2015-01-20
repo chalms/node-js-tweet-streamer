@@ -1,4 +1,4 @@
-/*
+
 html {
     font-size: 100%;
     overflow-y: scroll;
@@ -499,4 +499,4 @@ td:not(.linenos) .linenodiv {
     h2, h3 {
         page-break-after: avoid;
     }
-}*/
+}
